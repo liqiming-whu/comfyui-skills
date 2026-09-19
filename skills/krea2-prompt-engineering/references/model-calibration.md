@@ -7,7 +7,7 @@
 - [官方提示指南](https://github.com/krea-ai/krea-2/blob/main/docs/prompting.md)：推荐自然语言，详细描述通常有利，同时简短提示也可用；画中文字用引号标明。这里不推出“禁止所有短语”或“越长越好”。
 - [官方仓库](https://github.com/krea-ai/krea-2)：RAW 为未蒸馏基础模型，Turbo 为 8-step 蒸馏模型；推荐 RAW 训练 LoRA、Turbo 推理。具体 ComfyUI 节点参数须按实际工作流核实，不能把官方 CLI 的数值无条件移植。
 - [HD V1 作者模型卡](https://huggingface.co/wikeeyang/Krea2-Turbo-HD-V1)：自述 HD 优化、同步微调 VAE、改善细节与质感。这支持“经过调制/优化”，不足以确认具体训练配方或专门增强指令遵循。
-- 用户报告的官方 Turbo 局部形态实验：有时较强文字只得到温和效果。用户报告的 HD V1 单例：正向形态扩大，但局部范围及衣物细节边界未同步遵守。创建本技能时未取得该原图、完整参数和配对样本；这些是暂定观察，不能外推到所有 RAW、Turbo、量化、题材或种子。
+- 用户报告的官方 Turbo 局部形态实验：有时较强文字只得到温和效果。HD V1 的人物局部形态单例中，正向形态扩大，但局部范围及衣物细节边界未同步遵守。2026-09-19 又取得一组官方 Turbo 与 HD V1 的同提示词、同 seed 配对图及 PNG 工作流元数据，见下文“倒置双城配对实测”。这些仍是单种子、单题材观察，不能外推到所有 RAW、Turbo、量化、题材或种子。
 
 ## 独立维度
 
@@ -31,7 +31,55 @@ model_profile:
 
 Semantic Gain 是在当前配置与概念上，文字变化对应的可见强度变化；不是可跨模型通用的数字系数。Boundary Adherence 是对范围、相邻属性与覆盖要求的遵守程度。两者可以一高一低。没有配对实验时均保留 unknown；不从文件名、量化精度或“社区版”推断。
 
-HD V1 的暂定记录：source=community，modification=tuned；模型卡支持调制分类。semantic_gain=high、boundary_adherence=weak 仅为用户报告的局部形态单例，confidence=provisional，scope 限于该案例。精确微调方式及 VAE 独立贡献未知；这不是“全局更听指令”的结论。
+HD V1 的暂定记录：source=community，modification=tuned；模型卡支持调制分类。`semantic_gain=high`、`boundary_adherence=weak` 来自人物局部形态与倒置双城两类单种子案例，`confidence=provisional`，`scope` 限于对应配置和被测概念。不同语义的响应并不均匀，精确微调方式及 VAE 独立贡献未知；这不是“全局更听指令”的结论。
+
+## 倒置双城配对实测（2026-09-19）
+
+### 条件与证据边界
+
+两张 PNG 的嵌入工作流元数据确认了以下共同条件：
+
+- 完整提示词相同；
+- seed：`189019515025256`；
+- 文本编码器：`qwen3vl_4b_fp8_scaled.safetensors`；
+- sampler / scheduler：`euler_ancestral` + `simple`；
+- steps：8；CFG：1；输出分辨率：1920 × 1088。
+
+官方配置使用 `krea2_turbo_int8_convrot.safetensors` 与 `qwen_image_vae.safetensors`；HD 配置使用 `Krea2-Turbo-HD-V1-int8_convrot.safetensors` 与配套 `Krea2-HD-vae.safetensors`。因此这是**配置组合比较**，不是只替换 UNet 的严格消融；画面差异不能全部归因于 checkpoint，VAE 的独立贡献未知。
+
+测试提示词：
+
+```text
+A city hanging upside down from the sky, its towers pointing toward a mirrored city on the ground below, the two almost touching at their spires with a thin band of cloud between. Debris and waterfalls fall upward from the inverted streets. A single hot air balloon floats in the gap between them, dwarfed. Warm dusk light from the left, long shadows, volumetric haze. Shot on a 24mm wide-angle, symmetrical composition with the gap centered. Surreal fantasy matte painting, terracotta and dusk blue, dreamlike depth.
+```
+
+### 可观察结果
+
+| 维度 | 官方 Turbo 配置 | Krea2-Turbo-HD-V1 配置 |
+| --- | --- | --- |
+| 双城结构 | 上下两座城市都以较完整的天际线出现，倒置关系一眼可读 | 上方倒城占据更大面积，地面城市被压缩为中央近景塔楼，双城的同等体量关系减弱 |
+| 尖塔关系 | 两个中心尖塔在画面轴线上接近，较忠实表达“almost touching” | 中央塔楼和尖顶被显著放大，局部接近关系压过完整城市关系 |
+| 尺度锚点 | 热气球较小，仍能帮助建立巨构尺度 | 热气球明显变大，`dwarfed` 的尺度反差减弱 |
+| 镜头与构图 | 更像 24mm 建立镜头，横向城市范围和环境纵深更充分 | 更接近局部建筑的中近景裁切；虽保持中央间隙，但广角全景感较弱 |
+| 细节与质感 | 细节较克制，体积雾和远景衰减带来梦境纵深 | 建筑、屋瓦、车辆和人物等局部纹理更清楚，锐度、对比和暖色响应更强 |
+| 氛围 | 霞光、薄雾和远近层次较均衡，接近 fantasy matte painting | 质感更硬、更清晰，局部写实细节增强，但 `volumetric haze` 与 `dreamlike depth` 相对减弱 |
+| 动态元素 | 瀑布与碎片分布在双城之间，服务于整体场景 | 瀑布和碎片更醒目，但也进一步集中注意力到局部结构 |
+
+两套配置都理解了“天空中的倒置城市”、上下重力异常、中央间隙、暖色左侧暮光和大致对称构图。HD 配置没有表现为对所有句子都更忠实：它增强了建筑细节、中心尖塔、热气球、碎片与瀑布等显著对象，却弱化了完整双城、气球应被巨构压小、24mm 全景和梦境纵深等全局关系。
+
+这与人物局部形态案例指向同一种暂定模式：HD V1 对部分显著名词和局部几何具有更高响应，但全局构图约束与尺度边界没有同步增强。当前证据可将 `semantic_gain=high` 的适用范围扩展到“人物局部形态与本次巨构场景中的显著对象”；画像字段暂记 `boundary_adherence=weak`，并在说明中保留“不同语义响应不均匀”，置信度保持 `provisional`。
+
+### 对提示词策略的影响
+
+在 HD V1 上处理巨构或超尺度场景时：
+
+- 把全局拓扑提前写成一个不可拆分的主句，例如“两座完整城市以同等视觉重量上下相对”；
+- 对尺度锚点使用明确相对尺寸，如 `a tiny hot air balloon occupying only a minute fraction of the central gap`，不要只依赖 `dwarfed`；
+- 明确建立镜头和保留范围，如 `an extreme wide establishing view showing both complete skylines`；
+- 避免同时强调多个会争夺画面的局部显著对象；建筑纹理已经足够强时，不再叠加细节词；
+- 若首轮出现局部放大，先加强完整构图、相对尺寸和画面占比，再考虑增加更多风格词。
+
+这些策略是本次单种子诊断形成的下一轮测试假设，不是已验证的修复结论。应固定当前配置，以多个 seed 对比原提示词与最小改写版本后再升级置信度。
 
 ## 策略
 
