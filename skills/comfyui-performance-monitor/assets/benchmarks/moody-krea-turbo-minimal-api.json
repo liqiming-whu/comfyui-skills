@@ -1,0 +1,257 @@
+{
+  "763": {
+    "inputs": {
+      "conditioning": [
+        "627",
+        1
+      ]
+    },
+    "class_type": "ConditioningZeroOut",
+    "_meta": {
+      "title": "ConditioningZeroOut"
+    }
+  },
+  "698": {
+    "inputs": {
+      "width": 640,
+      "height": 960,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "Empty Latent Image (Base Dimensions) 初始大小"
+    }
+  },
+  "761": {
+    "inputs": {
+      "unet_name": "KreaMixv3MM_nvfp4.safetensors",
+      "weight_dtype": "default"
+    },
+    "class_type": "UNETLoader",
+    "_meta": {
+      "title": "UNETLoader"
+    }
+  },
+  "757": {
+    "inputs": {
+      "vae_name": "qwen_image_vae.safetensors"
+    },
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "VAELoader"
+    }
+  },
+  "822": {
+    "inputs": {
+      "model": [
+        "627",
+        3
+      ],
+      "clip": [
+        "627",
+        2
+      ]
+    },
+    "class_type": "Power Lora Loader (rgthree)",
+    "_meta": {
+      "title": "Power Lora Loader (rgthree)"
+    }
+  },
+  "755": {
+    "inputs": {
+      "clip_name": "qwen3vl_4b_fp8_scaled.safetensors",
+      "type": "krea2",
+      "device": "default"
+    },
+    "class_type": "CLIPLoader",
+    "_meta": {
+      "title": "CLIPLoader"
+    }
+  },
+  "599": {
+    "inputs": {
+      "model": [
+        "822",
+        0
+      ],
+      "positive": [
+        "627",
+        1
+      ],
+      "negative": [
+        "763",
+        0
+      ],
+      "latent_image": [
+        "698",
+        0
+      ],
+      "noise_seed": [
+        "649",
+        0
+      ],
+      "add_noise": "enable",
+      "steps": 8,
+      "cfg": 1,
+      "sampler_name": "euler",
+      "scheduler": "simple",
+      "start_at_step": 0,
+      "end_at_step": 8,
+      "return_with_leftover_noise": "enable"
+    },
+    "class_type": "KSamplerAdvanced",
+    "_meta": {
+      "title": "KSamplerAdvanced"
+    }
+  },
+  "649": {
+    "inputs": {
+      "seed": 841483634340345
+    },
+    "class_type": "Seed (rgthree)",
+    "_meta": {
+      "title": "Seed (1ST)"
+    }
+  },
+  "828": {
+    "inputs": {
+      "images": [
+        "829",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Preview Image (1ST)"
+    }
+  },
+  "610": {
+    "inputs": {
+      "samples": [
+        "638",
+        0
+      ],
+      "vae": [
+        "757",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAEDecode"
+    }
+  },
+  "651": {
+    "inputs": {
+      "images": [
+        "610",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Preview Image (2ND) Fine Details"
+    }
+  },
+  "638": {
+    "inputs": {
+      "model": [
+        "822",
+        0
+      ],
+      "positive": [
+        "627",
+        1
+      ],
+      "negative": [
+        "627",
+        1
+      ],
+      "latent_image": [
+        "647",
+        0
+      ],
+      "noise_seed": [
+        "649",
+        0
+      ],
+      "add_noise": "disable",
+      "steps": 10,
+      "cfg": 1,
+      "sampler_name": "dpmpp_2m_sde",
+      "scheduler": "sgm_uniform",
+      "start_at_step": 5,
+      "end_at_step": 999,
+      "return_with_leftover_noise": "disable"
+    },
+    "class_type": "KSamplerAdvanced",
+    "_meta": {
+      "title": "KSamplerAdvanced"
+    }
+  },
+  "732": {
+    "inputs": {
+      "images": [
+        "610",
+        0
+      ],
+      "filename_prefix": "image/Krea2-benchmark"
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "SaveImage"
+    }
+  },
+  "647": {
+    "inputs": {
+      "samples": [
+        "599",
+        0
+      ],
+      "upscale_method": "bislerp",
+      "scale_by": 1.8
+    },
+    "class_type": "LatentUpscaleBy",
+    "_meta": {
+      "title": "LatentUpscaleBy"
+    }
+  },
+  "829": {
+    "inputs": {
+      "samples": [
+        "599",
+        0
+      ],
+      "vae": [
+        "757",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAEDecode"
+    }
+  },
+  "627": {
+    "inputs": {
+      "opt_clip": [
+        "755",
+        0
+      ],
+      "opt_model": [
+        "761",
+        0
+      ],
+      "positive": "一位年轻女性坐在编织藤椅上, 她身穿黑色西装外套搭配白色衬衫和米色百褶裙, 长发披肩, 留着齐刘海, 眼神平静地望向镜头, 左手轻托下巴, 右手自然垂放在膝盖上, 姿态优雅而略带慵懒, 黑色丝袜上点缀着细小的心形图案, 脚边放着一双黑色皮鞋, 整体造型呈现出一种复古学院风的美感, 人物位于画面中央偏右位置, 身体微微侧转, 形成自然的视觉引导, 前景是人物主体和脚边的鞋子, 中景由藤椅、堆叠的礼物盒、南瓜装饰、干花和蜡烛组成, 背景则是布满节日元素的陈列架, 包括松果、干枝、小型圣诞树、鹿头摆件、陶瓷花瓶和写有中文的\"MOODY\"标牌, 整个空间被温暖的暖黄色灯光笼罩, 光线从左侧柔和地照射进来, 在人物面部和衣物上形成细腻的明暗过渡, 营造出温馨舒适的室内氛围, 构图采用中心构图法, 人物作为视觉焦点, 周围环绕着丰富的节日装饰物, 形成层次分明的空间布局, 色彩以棕褐色、米色、黑色和红色为主调, 点缀着金色和白色的光点, 整体色调和谐统一, 具有强烈的季节感和生活气息, 光影处理细腻, 高光部分集中在人物脸部、手部和部分装饰品上, 阴影则柔和地分布在背景和地面, 增强了画面的立体感和真实感, 整体风格融合了日系写真与节日主题, 既保留了日常生活的亲切感, 又带有艺术摄影的精致质感, 仿佛用一台老式胶片相机在冬日午后拍摄的场景, 充满了怀旧与温暖的氛围.",
+      "auto_random": false,
+      "lora_str": "",
+      "temp_str": "[{\"id\":\"token_1_1788209110385\",\"text\":\"<wlr:Krea2人脸2:1:1:1>\",\"translate\":\"Krea2人脸2\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_1_1788208456755\",\"text\":\"一位年轻女性坐在编织藤椅上\",\"translate\":\"一位年轻女性坐在编织藤椅上\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_2_1788208456755\",\"text\":\"她身穿黑色西装外套搭配白色衬衫和米色百褶裙\",\"translate\":\"她身穿黑色西装外套搭配白色衬衫和米色百褶裙\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_3_1788208456755\",\"text\":\"长发披肩\",\"translate\":\"长发披肩\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_4_1788208456755\",\"text\":\"留着齐刘海\",\"translate\":\"留着齐刘海\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_5_1788208456755\",\"text\":\"眼神平静地望向镜头\",\"translate\":\"眼神平静地望向镜头\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_6_1788208456755\",\"text\":\"左手轻托下巴\",\"translate\":\"左手轻托下巴\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_7_1788208456755\",\"text\":\"右手自然垂放在膝盖上\",\"translate\":\"右手自然垂放在膝盖上\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_8_1788208456755\",\"text\":\"姿态优雅而略带慵懒\",\"translate\":\"姿态优雅而略带慵懒\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_9_1788208456755\",\"text\":\"黑色丝袜上点缀着细小的心形图案\",\"translate\":\"黑色丝袜上点缀着细小的心形图案\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_10_1788208456755\",\"text\":\"脚边放着一双黑色皮鞋\",\"translate\":\"脚边放着一双黑色皮鞋\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_11_1788208456755\",\"text\":\"整体造型呈现出一种复古学院风的美感\",\"translate\":\"整体造型呈现出一种复古学院风的美感\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_12_1788208456755\",\"text\":\"人物位于画面中央偏右位置\",\"translate\":\"人物位于画面中央偏右位置\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_13_1788208456755\",\"text\":\"身体微微侧转\",\"translate\":\"身体微微侧转\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_14_1788208456755\",\"text\":\"形成自然的视觉引导\",\"translate\":\"形成自然的视觉引导\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_15_1788208456755\",\"text\":\"前景是人物主体和脚边的鞋子\",\"translate\":\"前景是人物主体和脚边的鞋子\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_16_1788208456755\",\"text\":\"中景由藤椅、堆叠的礼物盒、南瓜装饰、干花和蜡烛组成\",\"translate\":\"中景由藤椅、堆叠的礼物盒、南瓜装饰、干花和蜡烛组成\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_17_1788208456755\",\"text\":\"背景则是布满节日元素的陈列架\",\"translate\":\"背景则是布满节日元素的陈列架\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_18_1788208456755\",\"text\":\"包括松果、干枝、小型圣诞树、鹿头摆件、陶瓷花瓶和写有中文的\\\"MOODY\\\"标牌\",\"translate\":\"包括松果、干枝、小型圣诞树、鹿头摆件、陶瓷花瓶和写有中文的\\\"MOODY\\\"标牌\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_19_1788208456755\",\"text\":\"整个空间被温暖的暖黄色灯光笼罩\",\"translate\":\"整个空间被温暖的暖黄色灯光笼罩\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_20_1788208456755\",\"text\":\"光线从左侧柔和地照射进来\",\"translate\":\"光线从左侧柔和地照射进来\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_21_1788208456755\",\"text\":\"在人物面部和衣物上形成细腻的明暗过渡\",\"translate\":\"在人物面部和衣物上形成细腻的明暗过渡\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_22_1788208456755\",\"text\":\"营造出温馨舒适的室内氛围\",\"translate\":\"营造出温馨舒适的室内氛围\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_23_1788208456755\",\"text\":\"构图采用中心构图法\",\"translate\":\"构图采用中心构图法\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_24_1788208456755\",\"text\":\"人物作为视觉焦点\",\"translate\":\"人物作为视觉焦点\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_25_1788208456755\",\"text\":\"周围环绕着丰富的节日装饰物\",\"translate\":\"周围环绕着丰富的节日装饰物\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_26_1788208456755\",\"text\":\"形成层次分明的空间布局\",\"translate\":\"形成层次分明的空间布局\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_27_1788208456755\",\"text\":\"色彩以棕褐色、米色、黑色和红色为主调\",\"translate\":\"色彩以棕褐色、米色、黑色和红色为主调\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_28_1788208456755\",\"text\":\"点缀着金色和白色的光点\",\"translate\":\"点缀着金色和白色的光点\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_29_1788208456755\",\"text\":\"整体色调和谐统一\",\"translate\":\"整体色调和谐统一\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_30_1788208456755\",\"text\":\"具有强烈的季节感和生活气息\",\"translate\":\"具有强烈的季节感和生活气息\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_31_1788208456755\",\"text\":\"光影处理细腻\",\"translate\":\"光影处理细腻\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_32_1788208456755\",\"text\":\"高光部分集中在人物脸部、手部和部分装饰品上\",\"translate\":\"高光部分集中在人物脸部、手部和部分装饰品上\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_33_1788208456755\",\"text\":\"阴影则柔和地分布在背景和地面\",\"translate\":\"阴影则柔和地分布在背景和地面\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_34_1788208456755\",\"text\":\"增强了画面的立体感和真实感\",\"translate\":\"增强了画面的立体感和真实感\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_35_1788208456755\",\"text\":\"整体风格融合了日系写真与节日主题\",\"translate\":\"整体风格融合了日系写真与节日主题\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_36_1788208456755\",\"text\":\"既保留了日常生活的亲切感\",\"translate\":\"既保留了日常生活的亲切感\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_37_1788208456755\",\"text\":\"又带有艺术摄影的精致质感\",\"translate\":\"又带有艺术摄影的精致质感\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_38_1788208456755\",\"text\":\"仿佛用一台老式胶片相机在冬日午后拍摄的场景\",\"translate\":\"仿佛用一台老式胶片相机在冬日午后拍摄的场景\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false},{\"id\":\"token_39_1788208456755\",\"text\":\"充满了怀旧与温暖的氛围.\",\"translate\":\"充满了怀旧与温暖的氛围.\",\"isPunctuation\":false,\"isEditing\":false,\"isHidden\":false,\"color\":null,\"isLoraTag\":false}]",
+      "temp_lora_str": "[{\"name\":\"krea2人脸1\",\"weight\":1,\"text_encoder_weight\":1,\"display_name\":\"krea2人脸1.safetensors\",\"lora\":\"krea2人脸1.safetensors\",\"trigger_weight\":1,\"loraWorks\":\"\",\"hidden\":true},{\"name\":\"Krea2人脸2\",\"weight\":1,\"text_encoder_weight\":1,\"display_name\":\"Krea2人脸2.safetensors\",\"lora\":\"Krea2人脸2.safetensors\",\"trigger_weight\":1,\"loraWorks\":\"\",\"hidden\":true},{\"name\":\"Krea2人脸3\",\"weight\":1,\"text_encoder_weight\":1,\"display_name\":\"Krea2人脸3.safetensors\",\"lora\":\"Krea2人脸3.safetensors\",\"trigger_weight\":1,\"loraWorks\":\"\",\"hidden\":true}]",
+      "random_template": ""
+    },
+    "class_type": "WeiLinPromptUI",
+    "_meta": {
+      "title": "WeiLinPromptUI"
+    }
+  }
+}

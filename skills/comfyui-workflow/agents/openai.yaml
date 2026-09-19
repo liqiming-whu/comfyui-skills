@@ -1,0 +1,4 @@
+interface:
+  display_name: "ComfyUI Workflow"
+  short_description: "创建、修改并验证可在 ComfyUI WebUI 中编辑的工作流 JSON"
+  default_prompt: "Use $comfyui-workflow to inspect and safely update this ComfyUI UI workflow for the WebUI canvas."

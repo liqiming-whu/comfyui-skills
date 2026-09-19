@@ -1,0 +1,4 @@
+interface:
+  display_name: "ComfyUI Performance Monitor"
+  short_description: "记录环境并统计 ComfyUI 工作流执行时间"
+  default_prompt: "Use $comfyui-performance-monitor to record my local ComfyUI configuration and benchmark this workflow."

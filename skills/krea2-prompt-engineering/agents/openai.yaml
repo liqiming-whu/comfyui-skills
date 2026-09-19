@@ -1,0 +1,4 @@
+interface:
+  display_name: "Krea 2 提示词"
+  short_description: "编写 Krea 2 自然语言提示词，校准模型语义强度与摄影造型"
+  default_prompt: "Use $krea2-prompt-engineering to turn my visual idea into a natural-language Krea 2 prompt calibrated to my checkpoint."
