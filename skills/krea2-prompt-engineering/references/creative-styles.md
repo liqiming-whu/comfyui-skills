@@ -10,6 +10,8 @@ Natural realistic photography, authentic body proportions, natural skin texture.
 
 中文表达：自然写实的摄影风格，真实的身体比例，自然的皮肤质感。
 
+> `authentic body proportions` 是一根**幅度钳制器**：它把输出拉回「比例自然」那个吸引子。做局部形态校准或分档时，它会把档距压小但让结果更稳；想拉开局部形态幅度就删掉它（`Natural realistic photography, natural skin texture, candid photography.`），想收敛、防过执行就保留。删它是单变量改动，会同时改变幅度，比较时要单独记一笔。
+
 ## 写实绘画
 
 ```text
@@ -39,4 +41,4 @@ High-quality polished 2D anime illustration, clean expressive line art, refined 
 - 用户明确说“写实照片”“写实绘画”“半写实”或“二次元”时，使用对应模板作为风格段，并让场景光线与其一致。
 - 模板中的具体细节可被用户要求覆盖。例如用户指定阴天冷调时，不保留二次元模板的日落暖光；用户指定干发时，不保留 wet hair。
 - 用户未指定风格时不添加这些模板。用户指定模板外的风格时，保留其风格名称并补充少量媒介、笔触或光影特征，不强行归入四类。
-- 角色 LoRA 触发词仍位于整条提示词开头；风格段通常放在场景、构图和光线之后。
+- 角色 LoRA 触发词仍位于整条提示词开头；风格段通常放在场景、构图和光线之后，**不得排在核心形态句之前**（风格句自带体型先验，抢在前面会压掉核心形态）。

@@ -2,12 +2,13 @@
 
 ## 来源与证据
 
-核对日期：2026-09-19。
+核对日期：2026-09-19；2026-09-22 增补本机官方 Turbo 四档梯度实验。
 
 - [官方提示指南](https://github.com/krea-ai/krea-2/blob/main/docs/prompting.md)：推荐自然语言，详细描述通常有利，同时简短提示也可用；画中文字用引号标明。这里不推出“禁止所有短语”或“越长越好”。
 - [官方仓库](https://github.com/krea-ai/krea-2)：RAW 为未蒸馏基础模型，Turbo 为 8-step 蒸馏模型；推荐 RAW 训练 LoRA、Turbo 推理。具体 ComfyUI 节点参数须按实际工作流核实，不能把官方 CLI 的数值无条件移植。
 - [HD V1 作者模型卡](https://huggingface.co/wikeeyang/Krea2-Turbo-HD-V1)：自述 HD 优化、同步微调 VAE、改善细节与质感。这支持“经过调制/优化”，不足以确认具体训练配方或专门增强指令遵循。
 - 用户报告的官方 Turbo 局部形态实验：有时较强文字只得到温和效果。HD V1 的人物局部形态单例中，正向形态扩大，但局部范围及衣物细节边界未同步遵守。2026-09-19 又取得一组官方 Turbo 与 HD V1 的同提示词、同 seed 配对图及 PNG 工作流元数据，见下文“倒置双城配对实测”。这些仍是单种子、单题材观察，不能外推到所有 RAW、Turbo、量化、题材或种子。
+- 本机官方 Turbo 四档形态梯度实验（2026-09-21 / 09-22）：以“成年女性站立全身像的下腹凸出分级”为单一概念，在 `krea2_turbo_int8_convrot` + 原生 UNETLoader、8 步、CFG 1 下做 8 臂 × 3 seed × 4 档的成对实验，用于重写“以下规则适用于Krea2 官方版”并填写本章附录画像。主结论（语序是首要杠杆）在三个 seed 上重复。范围仍限于该概念、该配置与该题材。
 
 ## 独立维度
 
@@ -30,6 +31,8 @@ model_profile:
 ```
 
 Semantic Gain 是在当前配置与概念上，文字变化对应的可见强度变化；不是可跨模型通用的数字系数。Boundary Adherence 是对范围、相邻属性与覆盖要求的遵守程度。两者可以一高一低。没有配对实验时均保留 unknown；不从文件名、量化精度或“社区版”推断。
+
+另有一个不属于提示词响应、而属于**版本能力**的维度：官方版（RAW / Turbo、官方量化与官方微调）在**模型层面**限制裸露与过度 NSFW，社区 NSFW 强化版移除了该限制。它不随提示词文本改变，因此不计入 Semantic Gain 或 Boundary Adherence，也不需要配对实验去测；写提示词时按 `SKILL.md` **2.3** 区分暴露处理即可。
 
 HD V1 的暂定记录：source=community，modification=tuned；模型卡支持调制分类。`semantic_gain=high`、`boundary_adherence=weak` 来自人物局部形态与倒置双城两类单种子案例，`confidence=provisional`，`scope` 限于对应配置和被测概念。不同语义的响应并不均匀，精确微调方式及 VAE 独立贡献未知；这不是“全局更听指令”的结论。
 
@@ -85,8 +88,9 @@ A city hanging upside down from the sky, its towers pointing toward a mirrored c
 
 | 可用证据 | 第一轮策略 |
 | --- | --- |
-| 未知响应 | 单一、温和、字面准确的目标句；保留明确边界 |
-| 当前官方配置已有欠执行证据 | 先前置目标，再小幅加强一个几何描述；必要时增加一句提供新空间关系的重述 |
+| 未知响应 | 单一、温和、字面准确的目标句；核心形态前置、边界收尾，保留明确边界 |
+| 当前官方配置已有欠执行证据 | 先排语序（核心前置＋边界收尾），再核对服装承载词；两者都摆好仍欠执行才小幅加强一个几何描述 |
+| 需要多档梯度或训练集 caption | 逐字节冻结其余部分，只替换形态从句；光源与背景句逐档固定，出图后先归一化色调再判断档距 |
 | 仅量化官方权重 | 用已有官方 prompt 作比较基线，不假设量化强化遵循；仍重新验证 |
 | 当前概念高增益 | 删除同义叠加，降低一个强度档位；避免 fullness、rounded、clearly visible 多重强调 |
 | 高增益且边界弱 | 先降低核心强度，精简竞争语义并明确局部范围及面料结构；每轮看边界是否恢复 |
@@ -101,8 +105,31 @@ A city hanging upside down from the sky, its towers pointing toward a mirrored c
 
 每次记录：模型版本/文件标识、全部生成条件、完整 prompt、seed、结果路径、目标强度、局部范围、相邻属性、面料覆盖、构图。将观测和解释分开；缺图或缺参数时不编造分数。复现后才提高置信度，并保持结论的题材范围。
 
+读取结果时先排除整体调色：把各档按第一档做直方图匹配后再比较，否则一次全局重打光会被误读成强度分级。分档比较还要逐字节固定框架句，并单独记录取景漂移——构图一旦随档位移动，训练集里“强度”就会与“取景”相关。详见「以下规则适用于Krea2 官方版」§11。
+
 
 ## 以下规则适用于Krea2 官方版
+
+> **本章实测范围**：下列规则来自「成年女性站立全身像 · 下腹凸出分级」这一单一概念的成对实验，配置见文末「实测条件」。
+> 标记含义：**【实测·3 种子】** 三个 seed 上重复出现；**【实测·单例】** 单 seed，或改动未完全单变量隔离；**【假设】** 尚未验证的下一步。
+> 换概念、换题材、换配置后都应重新验证，不要把本章数值当作模型常数。
+
+### 0. 效率顺序：先改语序，再改词汇
+
+一条 prompt 里能动的旋钮，按实测收益排序：
+
+| 优先级 | 旋钮 | 实测收益 |
+| --- | --- | --- |
+| 1 | **句内语序**：核心形态在前，边界语义收尾 | 档距 CV 0.54 / 0.52 → **0.10 / 0.29 / 0.27** 【实测·3 种子】 |
+| 2 | **单变量**：一次只改一句 | 不产生收益；它决定上面那个数字可不可信 |
+| 3 | **承载句写对**：服装与覆盖面料的写法 | 单独一句就能把整条梯度压平，也能救回 |
+| 4 | 程度副词 → 几何状态 | 语序不动时 ≈ 无效（CV 0.478 / 0.476，与对照同量级）【实测·2 种子】 |
+| 5 | 语义重述（换视觉关系重说同一件事） | 推幅度，不推均匀度；seed 间不稳 |
+| 6 | `(word:1.3)` 一类括号权重 | 不按传统 CLIP 线性工作 |
+
+第 1 项与第 4 项差一个数量级。§1.2、§1.3 都是有效手段，但都不是第一顺位——**语序没摆对时，换再多同义词也读不出差别。**
+
+---
 
 ### 1.不要把传统词汇权重语法当作主要控制手段
 
@@ -128,6 +155,8 @@ A young woman with a noticeably fuller, rounded lower abdomen. Her waist, arms, 
 
 后者先建立核心形态，再用后续语义限制其他部位不过界。
 
+这是本节唯一被实测确认的大杠杆，落地写法见 §2。
+
 #### 1.2 具体化加权
 
 不要只提高程度副词：
@@ -145,6 +174,8 @@ clearly visible rounded fullness
 noticeably fuller lower abdomen
 a smooth forward fullness centered in the lower abdomen
 ```
+
+**实测边界**：在语序未摆正的前提下，把整条档位句从程度副词换成几何名词，读数与对照同量级（CV 0.478 / 0.476 对 0.544 / 0.519）。它的作用是把幅度做出来，不是把档距做匀。【实测·2 种子】
 
 #### 1.3 语义重述加权
 
@@ -174,52 +205,137 @@ The lower belly forms a smooth continuous curve against her otherwise slender to
 
 这类“语义冗余”可作为 Krea 2 的自然语言强调方式。
 
----
-
-
-### 2.核心语义前置：最重要的控制规则之一
-
-当一个属性必须严格生效时，把它放在 prompt 早期，并尽量与主体直接绑定。
-
-例如目标是“整体纤细，但局部下腹圆润”。
-
-较弱：
-
-```text
-A young woman with a narrow waist, slim arms, narrow hips, and long slim legs. She has natural proportions and a slender figure. Her lower abdomen is noticeably fuller.
-```
-
-更稳定的结构：
-
-```text
-A young woman with a noticeably fuller, rounded lower abdomen. Her waist, arms, hips, and legs remain slim.
-```
-
-这个写法有两个作用：
-
-1. 先让模型建立核心视觉状态；
-2. 后续的 `slim` 被降级为边界约束，而不是与核心状态争夺主体定义。
-
-#### 防止后续描述越界
-
-如果核心概念已经提前建立，后续描述应尽量只补：
-
-- 局部边界；
-- 服装；
-- 姿势；
-- 环境；
-- 光线；
-- 摄影属性。
-
-不要在后面重新定义主体体型，否则容易覆盖或稀释前面的核心语义。
+**实测边界**：按 1 / 2 / 2 / 3 句重述构造四档（梯度由重述句数驱动），实测推的是**幅度**而不是**均匀度**（档距 52.3 / 23.5 / 17.4，CV 0.489），且在第二个 seed 上档距结构改变（15.5 / 25.1 / 26.6）。它适合当幅度助推器，不适合当档距工具。【实测·2 种子】
 
 ---
 
-### 3.语义竞争：既是风险，也是边界控制工具
+### 2. 语序怎么摆：核心形态前置，边界语义收尾
 
-Krea 2 官方版在多个强语义之间经常表现为折中，而不是严格执行所有条件。
+落地模板——**核心形态独占第二个句子，边界降级为从句收尾**：
 
-例如：
+```text
+A young adult Chinese woman. Her lower belly <形态从句>, while her waist, arms,
+hips and legs stay slim and her upper abdomen stays flat.
+```
+
+对照写法——边界的属性直接挂在主语介绍里，与核心形态并列、且位置更靠前：
+
+```text
+A young adult Chinese woman with a narrow waist, slim arms, narrow hips and long
+slim legs, her upper abdomen flat, her lower belly <形态从句>.
+```
+
+两种写法的档距（相邻档位移，四档）：
+
+| 写法 | seed A | seed B | seed C | CV |
+| --- | --- | --- | --- | --- |
+| 边界前置 | 13.9 / 24.2 / **52.9** | 12.3 / **3.8** / 18.3 | — | 0.544 / 0.519 |
+| **形态前置＋边界收尾** | 31.2 / 29.3 / 24.7 | 20.4 / 30.4 / 15.1 | 16.2 / 28.9 / 17.8 | **0.097 / 0.290 / 0.269** |
+
+幅度没有下降（对照的 seed B 只有 11.5 的平均档位移），变的是**均匀**。
+
+**为什么**：本配置的 Boundary Adherence 偏强（见文末画像），边界语义可以压过核心目标。边界先行时模型先建立“典型瘦身材”这个整体状态，再把局部体积从中挤出去；边界后置时它只能以从句身份限制范围，无法重写主体。
+
+**验证方式**：只把程度副词换成几何名词、语序不动 → 读数与对照同量级（CV 0.478 / 0.476）。词汇不是杠杆，语序是。【实测·2 种子】
+
+---
+
+### 3. 边界语义不能删，只能后置
+
+边界从句是承重的。删掉 `while her waist, arms, hips and legs stay slim and her upper abdomen stays flat` 不是“把空间让给核心形态”，而是失去局部化约束，体积会向全身扩散。
+
+正确做法始终是：
+
+- 核心形态 = 主目标，占据句子的主句位置；
+- `slim limbs / waist / hips`、`upper abdomen flat` = 限制体积不外溢的边界，收尾；
+- 这条竞争是**有意保留**的，不要消除它。
+
+---
+
+### 4. 一次只动一句
+
+档距要能读出信号，同一批图里只能有一个变量。实测中有一整个 fold 因为服装句与视角句同时变化而无法归因，白跑。
+
+对**训练集**还有一条更硬的约束：**除形态从句以外的所有字节逐字节冻结**（发型、服装、背景、光源、构图、风格全部相同）。否则「局部形态大小」会和「构图 / 亮度 / 服装」在数据里相关，LoRA 会把它们一起学走。
+
+---
+
+### 5. 服装与覆盖句是局部形态的承载句
+
+局部形态能不能被读出来，很多时候不取决于形态句本身，而取决于**衣物那一句怎么写**。
+
+一次单变量替换实验（阳性对照：一条已知能分级的 caption，逐次只换回一句新文本）：
+
+| 只换入这一句 | 首→末档像素变化 | 判定 |
+| --- | --- | --- |
+| —（对照原样） | 52.6% | 分级 |
+| 主体形态句 | 53.8% | 分级 |
+| **发型＋服装＋姿态句** | **4.5%** | **压平** |
+| 背景句 | 45.1% | 分级 |
+| 光源句 | 55.8% | 分级 |
+
+承载词是这一对：
+
+```text
+form-fitting mini dress made of soft, opaque fabric       ← 体积能被读出来
+fitted short-sleeved dress in soft matte fabric           ← 整个梯度消失
+```
+
+机制：`form-fitting` + `opaque` 把“布料绷在身上、并且不透”写死，下腹体积**只能以剪影变化表达**；改成 `fitted … soft matte fabric` 后模型读成“版型合身的梭织连衣裙”，让布自然垂落，体积被布吸收。
+
+**换服装近义词时：颜色、质地、袖长、裙长、配饰、层次都可以动；把“绷紧＋不透”这一对表述固定下来。**
+
+> **同向证据（未完全单变量隔离）**：`that follows the gentle curve of her lower body`、`the fabric drapes smoothly over the curve of her lower abdomen`、`skims`、`clings` 这类**柔化谓语**同时存在时，梯度同样被压平；拆掉后梯度恢复单调可读。可表述为一条通用律：**任何形容词级的“柔化 / 顺滑 / 自然过渡”措辞都在抹掉形体读数。**
+
+> ⚠ **目标相反时结论相反。** 如果你的目标是**遮盖**而不是**读出**，`drapes smoothly`、宽缓轮廓、不透明内衬恰恰是要写的（见[提示方法](prompt-method.md)「局部形态与面料」）。同一批词汇服务两个相反目标，选词前先确认当前要的是哪一个。
+
+---
+
+### 6. 构图句不得抢在体型句之前
+
+把 `Full-length portrait from head to toe.` 从 caption 的**第 6 位提到第 1 位**（其余字节不变）：
+
+| 构图句位置 | 相邻档位移 | CV | 最高档 |
+| --- | --- | --- | --- |
+| 在体型句之后（默认） | 31.2 / 29.3 / 24.7 | 0.097 | 正常凸出 |
+| **提到最前** | 11.1 / 6.4 / 6.6 | 0.272 | **连衣裙从胸口直垂到髋部，肚子归零** |
+
+取景确实被锁住了（人物中心漂移 0.1%），但代价是整条梯度被压掉——构图先验赢了早期 token 之争，模型回落到“远景精瘦模特”那个吸引子。【实测·2 种子】
+
+**要锁构图，用体型句内部的常量前缀，不要动句序。** 即同一批图里核心句除形态从句外的所有字节保持完全相同（主体、腰部边界、上腹状态逐字节固定），只让那一个形态从句逐档变化。这样构图与档位解耦，同时不牺牲形体读数。
+
+---
+
+### 7. 强度分级：用几何状态，不用程度副词
+
+对官方 Krea 2，`subtle / noticeable / pronounced / extreme` 的视觉差距可能被压缩。
+
+更稳定的办法是让不同档位使用**不同的几何状态**——不是在同一个形容词上换档，而是在改变：
+
+- 曲率；
+- 可见程度；
+- 局部体积；
+- 必要时的向前投射感。
+
+一套实测能读出四档的写法（形态从句逐档替换，其余字节冻结）：
+
+```text
+L1  Her lower belly is slightly and softly rounded below the navel, ...
+L2  Her lower belly is clearly and softly rounded below the navel, with a small, visible natural fullness, ...
+L3  Her lower belly is noticeably fuller and rounded below the navel, with a clearly visible natural fullness, ...
+L4  Her lower belly is distinctly rounded and visibly fuller below the navel, forming a prominent natural fullness that pushes forward, ...
+```
+
+档位职责分工：L1 只给曲率；L2 加可见度（`small, visible`）；L3 加局部体积（`fuller`）；L4 加向前投射（`pushes forward`）。上一版把四个档位都写成程度副词＋`fullness` 的堆叠，实测相邻档读不出差别。
+
+> **注意**：换几何状态只负责把幅度做出来，**不负责把档距做匀**（见 §1.2）。均匀度靠 §2 的语序和 §4 的单变量。
+> 若某个强几何词带来过强先验，可以用多个温和但一致的关系描述达到相似效果，不必依赖一个极端词。
+
+---
+
+### 8. 语义竞争：做边界，不做主导
+
+Krea 2 官方版在多个强语义之间经常表现为折中，而不是严格执行所有条件：
 
 ```text
 extremely slender
@@ -228,95 +344,25 @@ completely natural body
 very flat abdomen
 ```
 
-这类描述内部就存在明显竞争。
+这类描述内部就存在明显竞争。使用原则：
 
-### 4.主目标之间应保持一致
-
-如果真正目标是局部腹部体积，核心语义应该朝同一方向：
-
-```text
-noticeably fuller
-softly rounded
-visible natural fullness
-smooth lower-abdominal volume
-```
-
-避免同时加入会直接否定主目标的强语义。
-
-### 5.竞争语义适合做边界，而不是抢主导权
-
-例如：
-
-```text
-Her lower abdomen is noticeably fuller and rounded. Her waist, arms, hips, and legs remain slim.
-```
-
-这里 `slim` 与 `fuller lower abdomen` 有一定竞争，但这种竞争是有意的：
-
-- `fuller lower abdomen` = 主目标；
-- `slim limbs / waist` = 限制体积不要扩散到全身。
-
-这种使用方式可以把模型的折中行为转化为“局部化控制”。
-
-### 6.竞争语义放后面
-
-如果把边界语义放在核心语义之前，模型可能先建立“典型瘦身材”，然后把局部体积压掉。
-
-因此默认：
-
-**核心形态在前，竞争/限制语义在后。**
+1. **主目标内部保持一致**。真正目标是局部腹部体积时，核心语义应朝同一方向：`noticeably fuller`、`softly rounded`、`visible natural fullness`、`smooth lower-abdominal volume`。避免同时加入会直接否定主目标的强语义。
+2. **竞争语义适合做边界，而不是抢主导权**。`Her lower abdomen is noticeably fuller and rounded. Her waist, arms, hips, and legs remain slim.` 里 `slim` 与 `fuller lower abdomen` 的竞争是有意的：前者是主目标，后者限制体积不要扩散到全身。这样可以把模型的折中行为转化为“局部化控制”。
+3. **竞争语义放后面**。边界语义放在核心语义之前，模型会先建立“典型瘦身材”，然后把局部体积压掉。默认顺序是**核心形态在前，竞争／限制语义在后**。落地模板见 §2。
+4. **边界生效不等于目标生效**。边界被遵守得很好时，主目标可能反而被压掉（§5、§6 的两个实例）。两者要分别记录、分别诊断，不要因为边界干净就认为整体服从。
 
 ---
 
-### 7.强度分级不要只依赖程度副词
+### 9. 环境与风格先验也在压形态
 
-对官方 Krea 2，`subtle / noticeable / pronounced / extreme` 的视觉差距可能被压缩。
+形体读数不只由形体句决定，环境与风格句自带体型先验。
 
-更稳定的办法是让不同档位使用不同的几何状态。
-
-例如：
-
-```text
-Level 1: slight roundness
-Level 2: clearly visible roundness
-Level 3: increased local volume
-Level 4: strong smooth fullness
-```
-
-这不是单纯把一个词从 `slight` 换成 `extreme`，而是在改变：
-
-- 曲率；
-- 可见程度；
-- 局部体积；
-- 必要时的向前投射感。
-
-#### 示例四档
-
-- **L1 — Curvature**
-```text
-Her relaxed lower abdomen is slightly and softly rounded, while the upper abdomen remains relatively flat.
-```
-
-- **L2 — Visible curvature**
-```text
-Her relaxed lower abdomen is clearly and softly rounded, with a gentle but clearly visible natural fullness, while the upper abdomen remains relatively flat.
-```
-
-- **L3 — Local volume**
-```text
-Her relaxed lower abdomen is noticeably fuller and rounded, with a clearly visible natural fullness, while the upper abdomen remains relatively flat.
-```
-
-- **L4 — Strong local shape**
-```text
-Her relaxed lower abdomen is distinctly rounded and visibly fuller, forming a smooth and prominent natural fullness, while the upper abdomen remains relatively flat.
-```
-
-如果某个强几何词会带来过强先验，可以通过多个温和但一致的关系描述达到相似效果，而不必依赖一个极端词。
+- **环境**：同一套形体阶梯句，暖色室内环境的相邻档位移可达 40% 量级，冷色深背景影棚只有约 10% 量级。深色影棚把人物拍成“时尚大片精瘦模特”，这层风格先验本身在压体积。若形体是主目标，环境句应选与目标同向的方案。【实测·单例（环境句与光源句同时变化）】
+- **风格句里的体质表述是压制指令**：`authentic body proportions` 出现在风格段（caption 第 5 位）时，档距 CV 为 0.312 / 0.158 / 0.202；删掉它，幅度完整保留。与语序修正叠加后 CV 降到 0.059 / 0.092 / 0.073（全表最均匀），但 seed A 的平均档位移被压到 11.1。判定：它是**幅度钳制器**，不是档距工具——想要拉开幅度就删，想要稳定收敛就留。
 
 ---
 
-### 8.“自然”和“强度”在官方版中的关系
+### 10. “自然”和“强度”在官方版中的关系
 
 本地实测表明，官方 Krea 2 往往倾向于把输出保持在一个视觉上较自然、合理、审美稳定的区域。
 
@@ -352,5 +398,68 @@ very strong fullness
 - 失去自然比例；
 - 局部结构被夸张到不合理；
 - 画面从“提示加强”变成“灾难性过执行”。
+
+---
+
+### 11. 观察渠道与读数纪律
+
+**渠道：侧视 ≫ 正面。** 正面视角下下腹凸出是轮廓**内部**的深度线索，只能靠明暗与边缘曲率间接读出；同一套已修好的四档，正面自动读数在躯干宽度轮廓上差异 < 1%。侧视（侧向主光）能把体积写成剪影变化，是四档阶梯的首选渠道。若成品最终主要是正面，需要单独为正面分支配更侧向的主光再验证。
+
+**读数：肉眼看到的“有分级”可能是曝光漂移。** 修正前的一版在原始像素读数上是 34 → 63 → 81%，看似完美单调，但那批图里**墙面亮度中位数从 95 掉到 69，而身体反而变亮**——模型在把肚子画大的同时把整个场景重打了一遍灯。去掉整体色调后，真实档距是 13.9 / 24.2 / 52.9，并不均匀。
+
+因此判定一条梯度是否成立，至少要做两件事：
+
+1. **先把整体色调归一化**（按档 1 做直方图匹配），剩下的差异才只能是空间结构；
+2. **同时看档距的幅度和均匀度**——用 `平均档位移 ×（最小档位移 / 最大档位移）` 这类判分，`均匀但都极小` 拿不到高分（那本来就是条没在分级的梯度）。
+
+另外：**冻结光源句与背景句**。修好语序后 ROI 均值仍随档位漂移（127 → 138），训练集里“肚子大”和“画面更亮”仍可能被一起学走。
+
+---
+
+### 附：实测条件
+
+- checkpoint：`krea2_turbo_int8_convrot.safetensors`，走原生 `UNETLoader`
+- 文本编码器：`qwen3vl_4b_fp8_scaled.safetensors`；VAE：`qwen_image_vae.safetensors`
+- 采样：8 步，CFG 1，euler / simple；分辨率 1152 × 1728（同一 seed 连续出四档）
+- seed：`135704819493437` / `246813579135` / `887394612057`
+- 被测概念：成年女性站立全身像的下腹凸出，四档
+- 读数：按列投影定位躯干 ROI → 直方图匹配到第 1 档（消掉整体调色）→ 相邻档 `mean|Δ|`
+- 判分：`SPACING SCORE = 平均档位移 ×（最小档位移 / 最大档位移）`
+- 实测日期：2026-09-21 / 2026-09-22
+
+**caption 骨架**（各段字节固定，只有 ① 的形态从句逐档变化）：
+
+```text
+① 核心句   A young adult Chinese woman. Her lower belly <形态从句>, while her waist,
+            arms, hips and legs stay slim and her upper abdomen stays flat.
+② 视角光线 Side profile view. <光源方向与光质>
+③ 发型服装 She has <发型>. She is wearing <服装，含 form-fitting / opaque>
+④ 姿态     She stands <姿态>
+⑤ 环境背景 <环境>. <色调氛围>
+⑥ 构图     Full-length portrait from head to toe.        ← 保持在这一位，不要前移
+⑦ 风格     <风格模板>
+```
+
+本配置的画像：
+
+```yaml
+model_profile:
+  family: krea2
+  checkpoint: krea2_turbo_int8_convrot.safetensors
+  variant: turbo
+  source: official
+  modification: quant_only
+  quantization: int8_convrot
+  vae: qwen_image_vae.safetensors
+  text_encoder: qwen3vl_4b_fp8_scaled.safetensors
+  loras: []
+  semantic_gain: balanced      # 文字改动能产生可见变化；但程度副词不线性，档距不均匀
+  boundary_adherence: strong   # 边界/覆盖语义可以压过核心目标：边界先行即抹平核心
+  evidence: observed_test
+  confidence: replicated       # 主结论在 3 个 seed 上重复
+  scope: 成年女性站立全身像的下腹凸出分级；1152x1728，8 步，CFG 1，官方 turbo int8
+```
+
+`boundary_adherence: strong` 是本配置最值得记住的一条：**它既解释了为什么局部化控制好写（边界一写就生效），也解释了为什么语序这么重要（边界一旦靠前，核心就被压掉）。**
 
 ---
