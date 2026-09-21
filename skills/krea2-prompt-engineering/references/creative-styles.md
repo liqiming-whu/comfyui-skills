@@ -5,10 +5,10 @@
 ## 写实照片
 
 ```text
-Natural realistic lifestyle portrait photography, authentic body proportions, natural skin texture.
+Natural realistic photography, authentic body proportions, natural skin texture.
 ```
 
-中文表达：自然写实的生活方式人像摄影，真实可信的身体比例，自然的皮肤质感。
+中文表达：自然写实的摄影风格，真实的身体比例，自然的皮肤质感。
 
 ## 写实绘画
 
