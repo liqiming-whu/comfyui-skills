@@ -2,13 +2,14 @@
 
 ## 来源与证据
 
-核对日期：2026-09-19；2026-09-22 增补本机官方 Turbo 四档梯度实验。
+核对日期：2026-09-19；2026-09-22 增补本机官方 Turbo 四档梯度实验与配置变量消融（量化 / VAE / 光照句）。
 
 - [官方提示指南](https://github.com/krea-ai/krea-2/blob/main/docs/prompting.md)：推荐自然语言，详细描述通常有利，同时简短提示也可用；画中文字用引号标明。这里不推出“禁止所有短语”或“越长越好”。
 - [官方仓库](https://github.com/krea-ai/krea-2)：RAW 为未蒸馏基础模型，Turbo 为 8-step 蒸馏模型；推荐 RAW 训练 LoRA、Turbo 推理。具体 ComfyUI 节点参数须按实际工作流核实，不能把官方 CLI 的数值无条件移植。
 - [HD V1 作者模型卡](https://huggingface.co/wikeeyang/Krea2-Turbo-HD-V1)：自述 HD 优化、同步微调 VAE、改善细节与质感。这支持“经过调制/优化”，不足以确认具体训练配方或专门增强指令遵循。
 - 用户报告的官方 Turbo 局部形态实验：有时较强文字只得到温和效果。HD V1 的人物局部形态单例中，正向形态扩大，但局部范围及衣物细节边界未同步遵守。2026-09-19 又取得一组官方 Turbo 与 HD V1 的同提示词、同 seed 配对图及 PNG 工作流元数据，见下文“倒置双城配对实测”。这些仍是单种子、单题材观察，不能外推到所有 RAW、Turbo、量化、题材或种子。
 - 本机官方 Turbo 四档形态梯度实验（2026-09-21 / 09-22）：以“成年女性站立全身像的下腹凸出分级”为单一概念，在 `krea2_turbo_int8_convrot` + 原生 UNETLoader、8 步、CFG 1 下做 8 臂 × 3 seed × 4 档的成对实验，用于重写“以下规则适用于Krea2 官方版”并填写本章附录画像。主结论（语序是首要杠杆）在三个 seed 上重复。范围仍限于该概念、该配置与该题材。
+- 本机配置变量消融（2026-09-22）：在冻结提示词与 seed 的前提下，逐项隔离 **checkpoint 量化**、**VAE** 与**光照从句**三个非文本变量。结论是：量化决定几何读数的量尺，VAE 只改色调，光照句里的一截平光短语压制形状。三项展开见下文「配置变量：量化、VAE 与光照句」。
 
 ## 独立维度
 
@@ -107,6 +108,49 @@ A city hanging upside down from the sky, its towers pointing toward a mirrored c
 
 读取结果时先排除整体调色：把各档按第一档做直方图匹配后再比较，否则一次全局重打光会被误读成强度分级。分档比较还要逐字节固定框架句，并单独记录取景漂移——构图一旦随档位移动，训练集里“强度”就会与“取景”相关。详见「以下规则适用于Krea2 官方版」§11。
 
+## 配置变量：量化、VAE 与光照句
+
+非文本变量也会改变画面。在「同一句 caption + 同一 seed + 同一张图 + 同分辨率 / 步数 / CFG」下，每次只换一个变量逐项隔离，得到下面三条互不替代的结论：**量化决定读数的量尺，VAE 决定色调，光照句决定形状能不能被读出来。**
+
+### 1. 量化格式决定几何读数
+
+同一 prompt、同一 seed，只换 UNet 文件：
+
+| UNet 文件 | 与基线逐字节 | 小腹读数 |
+| --- | --- | --- |
+| `krea2_turbo_fp8_scaled` | **相同** | 有清楚的柔软外凸 + 明暗起伏 |
+| `krea2_turbo_mxfp8` | 不同 | 与 fp8 基本并列 |
+| `krea2_turbo_int8_convrot` | 不同 | **最平**（两个视角的均值都排最后） |
+| `krea2_turbo_nvfp4` | 不同 | 也平，且 prompt 依从度掉一档（同一 caption 渲出不同服装） |
+
+排序：**`fp8_scaled` ≈ `mxfp8` ≫ `int8_convrot` ≈ `nvfp4`**。
+
+- 「全精度级」（fp8 / mxfp8）与「低位量化」（int8_convrot / nvfp4）之间是**画质与形状表达**的台阶，不是细微差别。
+- `int8_convrot` 会把同一句提示词读成**更平**的画面。在它上面做提示词 A/B，很容易把量化造成的平坦误判成「这句话没用」。
+- ⇒ **任何对照实验的第一步是钉死 checkpoint 文件名与量化格式，并在记录里写明。** 换一次量化等于换一把量尺，不同量化之间不共享读数尺度。
+
+### 2. VAE 只改色调，不改几何
+
+`Krea2-HD-vae`（484 MB / fp32，194 tensors，decoder 卷积相对差 0.2–2.8，带 `buster_*` 元数据）与 `qwen_image_vae`（242 MB / bf16，194 tensors）key set 完全一致、解码兼容，属**重调过的调音版**，不是原模型的副本。
+
+- 同 caption 下两个 VAE 的全帧 `mean|Δ|` 只有 5–6 / 255，视觉是**暖度、饱和度、微对比**的变化，**几何基本不动**。
+- 反证：用能读出形状的 caption，两个 VAE 都渲出腹凸；用被压平的措辞，两个都平 ⇒ **VAE 是色调旋钮，不是小腹旋钮**。
+- ⇒ 跨 VAE 比较时先做色调归一化再判形状；不得把 VAE 记作几何差异的来源。
+- **核对方法**：读工作流的 `VAELoader` 节点值，不要读模型文件内嵌的 metadata —— 文件 metadata 里出现的 VAE 名不一定被画布引用。
+
+### 3. 光照句尾的一截平光短语是形状压制源
+
+基线 caption 与后几代工作流的 caption 在**视角 + 光照**那一行上有实质差异。只改这一行、其余逐字节冻结后：
+
+- 该行结尾的 **`, with a soft even falloff across the wall behind her`** 半句是压制源。**只删这半句**（保留方向 / 高度句），全帧距离相对原样差 63（seed A）/ 48（seed C），**下腹明显回凸**，两个 seed 一致。
+- **位置无关**：把这半句原样搬到独立一行，全帧只差 7.5 —— 与「纯粹把一句话换到下一行」的噪声地板同量级。**搬家不解决，删除才解决。**
+- **方向 / 高度句是安全的**：`A single large soft light source is positioned 45 degrees to her left and slightly above.` 保留不动，结论照样成立。它正是为解耦「曝光 × 档位」而保留的一半。
+
+⇒ 写分档 caption 时，光照句只写**方向、高度、软硬、来源**；**不要写平光 / 均匀衰减收尾**（`soft even falloff`、`lights her whole figure evenly`、`flat, even mid-tone` 一类都会抹平塑形光与形状读数）。
+
+这一章的三条要先于「以下规则适用于Krea2 官方版」使用：**先钉住量化，再安定 VAE，最后才谈提示词。**
+
+---
 
 ## 以下规则适用于Krea2 官方版
 
@@ -117,6 +161,8 @@ A city hanging upside down from the sky, its towers pointing toward a mirrored c
 ### 0. 效率顺序：先改语序，再改词汇
 
 一条 prompt 里能动的旋钮，按实测收益排序：
+
+> 前提：配置变量（checkpoint 量化、VAE、光照句）先钉住。量化换一次等于换一把量尺，其影响大于下表所有旋钮；见「配置变量：量化、VAE 与光照句」一章。
 
 | 优先级 | 旋钮 | 实测收益 |
 | --- | --- | --- |
@@ -414,11 +460,20 @@ very strong fullness
 
 另外：**冻结光源句与背景句**。修好语序后 ROI 均值仍随档位漂移（127 → 138），训练集里“肚子大”和“画面更亮”仍可能被一起学走。
 
+**读数纪律补充（2026-09-22）**
+
+- **裁切宽度必须由身高定，不能由躯干最宽行定。** 按“躯干最宽行”取宽度会被手臂 / 姿势带跑（可达 40%）；改成固定身高分数（如 `0.30 × Hbody`）后各图的解剖带才等价（`Hb/H` 稳定在 ±2.5%）。同尺度对照是判几何的前提。
+- **整帧距离是“家族探测器”，不是形状探测器。** 它主要跟踪服装 / 背景 / 姿势这类全局内容（长袖暗廊 vs 短袖亮墙）。判局部几何**只用同一家族内的对照**（同服装同光）；跨家族差值会被照明与服装混淆。
+- **单图读数在阈值附近不可重复。** 同一张图换一次裁切，我在两份材料里给出过相反判词。接近阈值的对比只认人眼，且必须做成同一张图、同一尺度。
+- **解剖带要盖住被测部位。** 默认 `0.20–0.52H` 会把下腹切到画外（立姿 navel≈0.40H，0.52H 已到髋）；测下腹用 `0.32–0.62H`。
+- **做单变量前先 diff 整条 prompt。** 用 `difflib` 逐行对齐，确认“只差你打算差的那一处”再开跑。曾有一整轮“肚子句 A/B”跑在一条悄悄不同的光照行上，测的全是二阶效应。
+- **读 caption 读落盘的 sidecar `.txt`。** API dict 里 `CLIPTextEncode.inputs.text` 是 link（`["48", 0]`）而非字面量字符串；只有 override 过才有字符串。
+
 ---
 
 ### 附：实测条件
 
-- checkpoint：`krea2_turbo_int8_convrot.safetensors`，走原生 `UNETLoader`
+- checkpoint：`krea2_turbo_int8_convrot.safetensors`，走原生 `UNETLoader`（低位量化；相对结论成立，绝对幅度见上文「量化注记」）
 - 文本编码器：`qwen3vl_4b_fp8_scaled.safetensors`；VAE：`qwen_image_vae.safetensors`
 - 采样：8 步，CFG 1，euler / simple；分辨率 1152 × 1728（同一 seed 连续出四档）
 - seed：`135704819493437` / `246813579135` / `887394612057`
@@ -449,7 +504,7 @@ model_profile:
   variant: turbo
   source: official
   modification: quant_only
-  quantization: int8_convrot
+  quantization: int8_convrot    # 低位量化：几何读数偏平，见「配置变量」
   vae: qwen_image_vae.safetensors
   text_encoder: qwen3vl_4b_fp8_scaled.safetensors
   loras: []
@@ -457,9 +512,11 @@ model_profile:
   boundary_adherence: strong   # 边界/覆盖语义可以压过核心目标：边界先行即抹平核心
   evidence: observed_test
   confidence: replicated       # 主结论在 3 个 seed 上重复
-  scope: 成年女性站立全身像的下腹凸出分级；1152x1728，8 步，CFG 1，官方 turbo int8
+  scope: 成年女性站立全身像的下腹凸出分级；1152x1728，8 步，CFG 1，官方 turbo（本表档距实测在 int8_convrot 上取得）
 ```
 
 `boundary_adherence: strong` 是本配置最值得记住的一条：**它既解释了为什么局部化控制好写（边界一写就生效），也解释了为什么语序这么重要（边界一旦靠前，核心就被压掉）。**
+
+> **量化注记（2026-09-22）**：上表档距数字取自 `int8_convrot`。同一提示词与 seed 下，`fp8_scaled` / `mxfp8` 的形状读数明显更饱满，`int8_convrot` / `nvfp4` 偏平；本仓库的比较基线（“04”）经字节级证明是用 `krea2_turbo_fp8_scaled` 渲的。因此本表的**相对结论**（语序是首要杠杆、承载句承重等）在 int8 上成立且可复现，但**“形状是否被读出”与绝对幅度**应换到全精度级量化上重核。见「配置变量：量化、VAE 与光照句」一章。
 
 ---

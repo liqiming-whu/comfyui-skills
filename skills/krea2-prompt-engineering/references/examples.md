@@ -91,6 +91,8 @@ L4  is distinctly rounded and visibly fuller below the navel, forming a prominen
 - ⑦ 风格段若含 `authentic body proportions` 一类体质表述，它是一根**幅度钳制器**：想拉开档距就删，想收敛稳定就留；
 - ⑤ 环境句自带体型先验（冷色深背景影棚会压体积），做分档时逐档冻结，不要随机更换；
 - 出图后按[提示方法](prompt-method.md)「读数方法」确认单调与均匀度，再批量出图。
+- ② 光照句只写方向、高度、软硬与来源；**不要加 `soft even falloff across the wall behind her` 一类平光收尾**——它抹平形状读数，**删除它比移动它有效**（依据见[模型校准](model-calibration.md)「配置变量：量化、VAE 与光照句」）；
+- 同一批梯度必须钉死同一 checkpoint 与量化格式（本包基线为 `krea2_turbo_fp8_scaled`；`int8_convrot` / `nvfp4` 会系统性读平）。
 
 ## 普通 SFW 产品
 
