@@ -10,11 +10,15 @@ These are archived working examples rather than universal baselines. For a workf
 | --- | --- |
 | `Face Swap (InfiniteYou) Workflow V1.json` | InfiniteYou face-swap example. |
 | `Krea2 High-Low-Sigma Workflow v1.json` | Krea 2 high/low-sigma example. |
-| `Krea2 Raw FP8 Test Workflow (no resample) .json` | Krea 2 RAW FP8 test example. |
+| `Krea2 Raw FP8 Test Workflow.json` | Krea 2 RAW FP8 test example. |
+| `Krea2 Raw FP8 Test Workflow (no Second Sampling) .json` | Krea 2 RAW FP8 test without second sampling. |
+| `Krea2 Turbo Base Workflow.json` | Krea 2 Turbo base generation example. |
 | `Krea2 Turbo generate training data workflow.json` | Krea 2 Turbo training-data generation example. |
-| `Krea2 Turbo Stranded 4k Workflow v2.json` | Krea 2 Turbo 4K example. |
+| `Krea2 Turbo Standard 4k Workflow v2.json` | Krea 2 Turbo 4K example with second sampling; each upscale control connects within its own group. |
+| `Krea2 Turbo Standard 4k Workflow v2 (no Second Sampling).json` | Krea 2 Turbo 4K example without second sampling; each upscale control connects within its own group. |
 | `▶▷Flux2-klein-高清生图流.json` | FLUX.2 klein high-resolution generation example. |
-| `▶▷Qwen-Edit2511-GGUF千问编辑流.json` | Qwen Image Edit 2511 GGUF editing example. |
+| `▶▷Qwen-image21-图像编辑+生图流（整合）.json` | Qwen-Image 2.1 unified image editing and generation example; preferred for new Qwen editing workflows. |
+| `▶▷Qwen-Edit2511-GGUF千问编辑流.json` | Qwen Image Edit 2511 GGUF editing example for existing installations. |
 | `▶▷Z-image-高清生图流.json` | Z-Image high-resolution generation example. |
 
 ## Image generation and editing

@@ -6,7 +6,7 @@
 
 [![ComfyUI](https://img.shields.io/badge/ComfyUI-Workflows-19C3FF?style=for-the-badge)](https://github.com/comfyanonymous/ComfyUI)
 [![Krea 2](https://img.shields.io/badge/Krea%202-Prompting-8B5CF6?style=for-the-badge)](skills/krea2-prompt-engineering/)
-[![Workflows](https://img.shields.io/badge/Workflow%20JSON-44-FF6B6B?style=for-the-badge)](skills/comfyui-workflow/assets/templates/)
+[![Workflows](https://img.shields.io/badge/Workflow%20JSON-48-FF6B6B?style=for-the-badge)](skills/comfyui-workflow/assets/templates/)
 [![Repository](https://img.shields.io/badge/GitHub-Public-181717?style=for-the-badge&logo=github)](https://github.com/liqiming-whu/comfyui-skills)
 
 </div>
@@ -21,7 +21,7 @@
 | --- | --- | --- |
 | [`comfyui-workflow`](skills/comfyui-workflow/) | 创建、修改、迁移和校验 ComfyUI UI 工作流 | UI 工作流 JSON、模型依赖和结构检查 |
 | [`comfyui-performance-monitor`](skills/comfyui-performance-monitor/) | 记录 ComfyUI 运行时间与本机资源状态 | 可比较的性能测量报告 |
-| [`krea2-prompt-engineering`](skills/krea2-prompt-engineering/) | 编写和调试 Krea 2 自然语言提示词 | 模型校准、摄影和造型提示词 |
+| [`krea2-prompt-engineering`](skills/krea2-prompt-engineering/) | 编写和调试 Krea 2 自然语言提示词 | 模型校准、摄影造型与东方仙宫场景提示词 |
 | [`krea2-megastructure-prompts`](skills/krea2-megastructure-prompts/) | 生成巨构、巨兽与超尺度场景提示词 | 英文长提示词、尺度锚定和场景变体 |
 
 每个 Skill 都是独立可分发目录。安装时复制所需的完整目录，不要只复制 `SKILL.md`。
@@ -29,7 +29,7 @@
 ## 当前模型方向
 
 - **文生图**：Krea 2 是截至 2026-09 的默认首选。
-- **图像编辑**：优先评估 FLUX.2 klein 9B 与 Qwen-Image 系列。
+- **图像编辑**：优先评估 FLUX.2 klein 9B 与 Qwen-Image 2.1。Qwen-Image 2.1 已发布，统一支持生图与编辑；本项目认为其图像编辑表现出色，可替代 Qwen-Image-Edit 2511。发布与能力说明见[官方模型卡](https://huggingface.co/Qwen/Qwen-Image-2.1)。
 - **轻量生成**：Z-Image 是资源受限环境下的优先选择。
 - **视频生成**：MiniMax H3 是当前默认首选。
 
@@ -40,8 +40,8 @@
 [`skills/comfyui-workflow/assets/templates`](skills/comfyui-workflow/assets/templates/) 当前包含：
 
 - **36 份创作基线**：覆盖 SD、SDXL、SD3、FLUX、Wan、LTXV、Hunyuan、Cosmos、音频、3D 和 LLM Party 等任务。
-- **8 份迁入示例**：覆盖 Krea2、InfiniteYou、Flux2-klein、Qwen Edit 和 Z-Image。
-- **共 44 份 UI 工作流 JSON**。
+- **12 份迁入示例**：覆盖 Krea2 RAW、Turbo、训练数据生成、4K、InfiniteYou、Flux2-klein、Qwen-Image 2.1、Qwen Edit 和 Z-Image。
+- **共 48 份 UI 工作流 JSON**。
 
 > [!IMPORTANT]
 > 部分传统模板可能已随模型、节点或 ComfyUI 版本演进而过时。创建新模型工作流时，优先参考 Krea2、InfiniteYou、Flux2-klein、Qwen Edit 和 Z-Image 迁入工作流的现代图结构，再根据目标实例的 `/object_info` 更新模型、节点契约和输入参数。
@@ -108,12 +108,12 @@ uv run python -m unittest discover -s skills/comfyui-workflow/tests -v
 uv run python skills/comfyui-workflow/scripts/workflow_tool.py validate workflow.json
 ```
 
-当前仓库的 44 份工作流均可完成 JSON 解析；`comfyui-workflow` 的结构校验和单元测试已通过。真实运行兼容性仍取决于目标 ComfyUI、节点版本和本地模型文件。
+当前仓库的 48 份工作流均可完成 JSON 解析；`comfyui-workflow` 的 6 项单元测试已通过。InfiniteYou 示例保留源文件中的字符串节点 ID，当前结构校验器要求整数 ID，因此会报告相关错误；其余 47 份工作流通过结构校验。本次示例同步未逐份执行推理，真实运行兼容性仍取决于目标 ComfyUI、节点版本和本地模型文件。
 
 ## 致谢
 
 - [`comfyui-workflow`](skills/comfyui-workflow/) 基于 [LingyiChen-AI/comfyui-workflow-skill](https://github.com/LingyiChen-AI/comfyui-workflow-skill) 二次创作，在原项目基础上增加了 Krea2、FLUX.2 klein 9B、Qwen Edit、Z-Image 和 MiniMax H3 等当前热门模型资料。感谢原项目作者及贡献者提供的基础工作。
-- [`krea2-prompt-engineering`](skills/krea2-prompt-engineering/) 中的素材库和部分模板来源于 **B站-是古手梨花sama**。感谢作者整理和分享相关素材。
+- [`krea2-prompt-engineering`](skills/krea2-prompt-engineering/) 中的素材库、部分模板及[仙宫专用场景提示词引擎](skills/krea2-prompt-engineering/references/immortal-palace.md)来源于 **B站-是古手梨花sama**。仙宫引擎已整合景别、世界系统、叙事、尺度与造型词库，并适配本技能的语言、LoRA 和输入协议。感谢作者整理和无私分享相关素材。
 - [`krea2-megastructure-prompts`](skills/krea2-megastructure-prompts/) 来自 B 站作者 **黑鹤001**：[个人空间](https://space.bilibili.com/515231056)。本项目仅作归档保存，未对该 Skill 作任何修改。衷心感谢作者的无私奉献。本项目的部分示例工作流也取自他的分享；更多高质量教程和工作流请关注作者账号自行获取，本项目不重复拷贝。
 
 ---
