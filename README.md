@@ -2,7 +2,7 @@
 
 # ComfyUI Skills
 
-面向 ComfyUI 工作流创作、模型迁移、结构校验、性能测量与 Krea 2 提示词工程的多 Skill 工具箱。
+面向 ComfyUI 工作流创作、模型迁移、结构校验、性能测量、Krea 2 提示词工程与 LoRA 数据集及训练评估的多 Skill 工具箱。
 
 [![ComfyUI](https://img.shields.io/badge/ComfyUI-Workflows-19C3FF?style=for-the-badge)](https://github.com/comfyanonymous/ComfyUI)
 [![Krea 2](https://img.shields.io/badge/Krea%202-Prompting-8B5CF6?style=for-the-badge)](skills/krea2-prompt-engineering/)
@@ -15,13 +15,14 @@
 
 ## 项目概览
 
-本仓库将工作流创作、节点资料、模型选型、性能测量和提示词方法整理为可独立安装的 Codex Skills。它既提供可导入 ComfyUI WebUI 的工作流资产，也保留维护这些资产所需的脚本、参考资料和测试。
+本仓库将工作流创作、节点资料、模型选型、性能测量、提示词方法和 LoRA 数据集及训练评估整理为可独立安装的 Codex Skills。它既提供可导入 ComfyUI WebUI 的工作流资产，也保留维护这些资产所需的脚本、参考资料和测试。
 
 | Skill | 用途 | 主要交付 |
 | --- | --- | --- |
 | [`comfyui-workflow`](skills/comfyui-workflow/) | 创建、修改、迁移和校验 ComfyUI UI 工作流 | UI 工作流 JSON、模型依赖和结构检查 |
 | [`comfyui-performance-monitor`](skills/comfyui-performance-monitor/) | 记录 ComfyUI 运行时间与本机资源状态 | 可比较的性能测量报告 |
 | [`krea2-prompt-engineering`](skills/krea2-prompt-engineering/) | 编写和调试 Krea 2 自然语言提示词 | 模型校准、摄影造型与东方仙宫场景提示词 |
+| [`krea2-lora-training`](skills/krea2-lora-training/) | 制作和审查人物、风格或物件 LoRA 数据集，核对训练配置并评估检查点 | 图文配对与 caption 检查、数据集修订和固定条件评估方案 |
 | [`krea2-megastructure-prompts`](skills/krea2-megastructure-prompts/) | 生成巨构、巨兽与超尺度场景提示词 | 英文长提示词、尺度锚定和场景变体 |
 
 每个 Skill 都是独立可分发目录。安装时复制所需的完整目录，不要只复制 `SKILL.md`。
@@ -62,6 +63,7 @@ cd comfyui-skills
 ```powershell
 Copy-Item -Recurse skills\comfyui-workflow "$env:USERPROFILE\.codex\skills\"
 Copy-Item -Recurse skills\krea2-prompt-engineering "$env:USERPROFILE\.codex\skills\"
+Copy-Item -Recurse skills\krea2-lora-training "$env:USERPROFILE\.codex\skills\"
 ```
 
 性能监测和巨构提示词 Skill 可按相同方式单独安装。复制完成后开启新会话，使 Skill 目录重新载入。
@@ -95,6 +97,7 @@ comfyui-skills/
     ├── comfyui-workflow/            # 工作流创作、模板、节点资料与校验脚本
     ├── comfyui-performance-monitor/ # 性能测量与报告示例
     ├── krea2-prompt-engineering/    # Krea 2 通用提示词工程
+    ├── krea2-lora-training/         # LoRA 数据集、caption 校验与训练评估
     └── krea2-megastructure-prompts/ # Krea 2 巨构提示词归档
 ```
 
@@ -110,11 +113,22 @@ uv run python skills/comfyui-workflow/scripts/workflow_tool.py validate workflow
 
 当前仓库的 48 份工作流均可完成 JSON 解析；`comfyui-workflow` 的 6 项单元测试已通过。InfiniteYou 示例保留源文件中的字符串节点 ID，当前结构校验器要求整数 ID，因此会报告相关错误；其余 47 份工作流通过结构校验。本次示例同步未逐份执行推理，真实运行兼容性仍取决于目标 ComfyUI、节点版本和本地模型文件。
 
+LoRA 数据集检查依赖 Pillow。在训练 Skill 目录运行测试或检查数据集：
+
+```powershell
+cd skills/krea2-lora-training
+uv run --no-project --with pillow python -X utf8 -m unittest discover -s tests -t . -q
+uv run --no-project --with pillow python -X utf8 scripts/lint_captions.py "<dataset_dir>" --trigger "<trigger>" --strict --json
+```
+
+检查器默认只读，覆盖图文配对、图片解码、UTF-8 caption、触发词和镜像方向等检查。启发式告警供人工复核，静态通过不能证明人物身份一致或训练效果。使用说明见[训练技能](skills/krea2-lora-training/SKILL.md)和[验收协议](skills/krea2-lora-training/references/qa-checklist.md)。
+
 ## 致谢
 
+- [`krea2-lora-training`](skills/krea2-lora-training/) 从本地维护的同名技能完整整合，保留入口、界面元数据、参考资料、提示词资产、检查脚本和测试。其 Krea 2 官方建议与适用范围见[来源说明](skills/krea2-lora-training/references/quick-reference.md)。感谢 Krea 团队公开模型、训练资料与提示词参考。
 - [`comfyui-workflow`](skills/comfyui-workflow/) 基于 [LingyiChen-AI/comfyui-workflow-skill](https://github.com/LingyiChen-AI/comfyui-workflow-skill) 二次创作，在原项目基础上增加了 Krea2、FLUX.2 klein 9B、Qwen Edit、Z-Image 和 MiniMax H3 等当前热门模型资料。感谢原项目作者及贡献者提供的基础工作。
 - [`krea2-prompt-engineering`](skills/krea2-prompt-engineering/) 中的素材库、部分模板及[仙宫专用场景提示词引擎](skills/krea2-prompt-engineering/references/immortal-palace.md)来源于 **B站-是古手梨花sama**。仙宫引擎已整合景别、世界系统、叙事、尺度与造型词库，并适配本技能的语言、LoRA 和输入协议。感谢作者整理和无私分享相关素材。
-- [`krea2-megastructure-prompts`](skills/krea2-megastructure-prompts/) 来自 B 站作者 **黑鹤001**：[个人空间](https://space.bilibili.com/515231056)。本项目仅作归档保存，未对该 Skill 作任何修改。衷心感谢作者的无私奉献。本项目的部分示例工作流也取自他的分享；更多高质量教程和工作流请关注作者账号自行获取，本项目不重复拷贝。
+- [`krea2-megastructure-prompts`](skills/krea2-megastructure-prompts/) 来自 B 站作者 **黑鹤001**：[个人空间](https://space.bilibili.com/515231056)。本项目在归档基础上做了轻量 Codex 适配，包括入口元数据、发现描述、资源链接、界面元数据及安装和调用说明；核心创作方法、参考词库与 30 条提示词示例保持原样。适配详情见[技能说明](skills/krea2-megastructure-prompts/README.md)。衷心感谢作者的无私奉献。本项目的部分示例工作流也取自他的分享；更多高质量教程和工作流请关注作者账号自行获取，本项目不重复拷贝。
 
 ---
 

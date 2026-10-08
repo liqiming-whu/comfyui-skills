@@ -2,29 +2,31 @@
 
 为 Krea 2 图像模型生成**巨构 / 超尺度结构**类生图提示词的 skill。覆盖建筑巨构、生物巨兽、自然与地质巨构、机械载具巨构、超现实混合巨构五大场景。
 
+原作者为 B 站 **黑鹤001**：[个人空间](https://space.bilibili.com/515231056)。本项目在归档基础上做了轻量 Codex 适配：规范入口元数据、精简发现描述、补充相对资源链接与界面元数据，并更新安装和调用说明。核心创作方法、参考词库和 30 条提示词示例保持原样。感谢作者的无私分享。
+
 ## 安装
 
 ### 方式一：用户级安装（推荐，所有项目可用）
 
 把整个 `krea2-megastructure-prompts` 文件夹复制到：
 
-- **Windows**：`C:\Users\<你的用户名>\.workbuddy\skills\`
-- **macOS / Linux**：`~/.workbuddy/skills/`
+- **Windows**：`C:\Users\<你的用户名>\.agents\skills\`
+- **macOS / Linux**：`~/.agents/skills/`
 
 最终路径形如：
 
 ```
-~/.workbuddy/skills/krea2-megastructure-prompts/SKILL.md
+~/.agents/skills/krea2-megastructure-prompts/SKILL.md
 ```
 
-复制完成后重启一次会话（或新开一个对话），即可通过描述需求触发。
+Codex 会自动检测技能变化；如未出现，重启 Codex 后再使用。安装位置与调用方式见 [OpenAI 官方技能文档](https://learn.chatgpt.com/docs/build-skills)。
 
 ### 方式二：项目级安装（仅当前项目可用，可随仓库共享）
 
 把文件夹复制到项目根目录下：
 
 ```
-<项目根目录>/.workbuddy/skills/krea2-megastructure-prompts/
+<项目根目录>/.agents/skills/krea2-megastructure-prompts/
 ```
 
 ### 方式三：从 zip 安装
@@ -37,6 +39,8 @@
 krea2-megastructure-prompts/
 ├── SKILL.md                        # 主入口：工作流、七层公式、Krea 2 硬规则、参数速查、翻车修法
 ├── README.md                       # 本文件
+├── agents/
+│   └── openai.yaml                 # Codex 界面名称、简介与默认调用提示
 ├── references/
 │   ├── scene-playbooks.md          # 五类场景剧本（A建筑/B生物/C自然/D机械/E超现实）+ 跨类配方
 │   ├── layer-vocabulary.md         # 七层词库、尺度锚定技法、组装模板、反模式清单
@@ -53,6 +57,8 @@ krea2-megastructure-prompts/
 - "生成一条巨鲸飘在城市上空的 krea2 提示词，竖构图"
 - "这条提示词帮我按巨构思路润色一下：a huge tree in the cloud"
 - "给我 3 个不同方向的超现实巨构探索种子"
+
+也可在 Codex 中显式调用：`$krea2-megastructure-prompts 帮我写一条云海巨塔的提示词`。技能保持默认的自动匹配行为。
 
 ## 输出包含什么
 
@@ -73,3 +79,5 @@ krea2-megastructure-prompts/
 ## 版本
 
 v1.0.0 — 依据 Krea 2 官方 prompting 指南与 prompt expander 规范编写。
+
+2026-10-08 — 本项目完成轻量 Codex 格式与安装说明适配。

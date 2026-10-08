@@ -1,0 +1,4 @@
+interface:
+  display_name: "Krea 2 巨构提示词"
+  short_description: "为巨构、巨兽与超尺度场景编写自然语言提示词，强化尺度参照与空间构图"
+  default_prompt: "请使用 $krea2-megastructure-prompts 为我的巨构场景编写提示词，并说明尺度锚定、构图与参数建议。"

@@ -1,8 +1,8 @@
 ---
 name: krea2-megastructure-prompts
-description: 为 Krea 2 图像模型生成"巨构"（mega-scale structure / 超尺度结构）类生图提示词。适用于巨构建筑、巨型生物与巨兽、自然与地质巨构、机械载具巨构、超现实混合巨构等场景。当用户要求生成巨型建筑、巨兽、巨神像、悬浮要塞、巨型峡谷/巨树/巨浪、星舰机甲、世界树、天空之城，或提到"巨构""巨型""超尺度""史诗感""压迫感""尺度对比""monumental""colossal""megastructure""leviathan"时使用。产出英文长句提示词 + 中文说明 + Krea 2 参数建议。
-version: 1.0.0
-agent_created: true
+description: 为 Krea 2 编写或润色巨构、巨兽与超尺度场景的生图提示词。适用于建筑、生物、自然地质、机械载具和超现实巨构的尺度锚定与构图请求；输出英文提示词、中文说明及参数建议。
+metadata:
+  version: "1.0.0"
 ---
 
 # 巨构提示词生成器（Krea 2）
@@ -32,7 +32,7 @@ agent_created: true
 
 ### 2. 选场景剧本
 
-读 `references/scene-playbooks.md`，按主体类型调对应的结构语法词库、材质词库与镜头建议。
+读 [场景剧本](references/scene-playbooks.md)，按主体类型调对应的结构语法词库、材质词库与镜头建议。
 剧本：**A 建筑巨构 · B 生物巨构 · C 自然/地质巨构 · D 机械载具巨构 · E 超现实混合巨构**。
 
 ### 3. 按七层组装（MEGA-STACK）
@@ -47,7 +47,7 @@ agent_created: true
 6. **CAMERA 镜头与构图** — 焦距、视角、构图、画幅
 7. **STYLE 风格与渲染** — 媒介、笔触、调色、颗粒
 
-七层的词库与句式在 `references/layer-vocabulary.md`。
+七层的词库与句式在 [分层词库](references/layer-vocabulary.md)。
 
 ### 4. 尺度自查（本 skill 的灵魂，必做）
 
@@ -135,10 +135,10 @@ agent_created: true
 
 | 文件 | 内容 |
 |---|---|
-| `references/scene-playbooks.md` | 五类场景剧本：结构语法、材质、环境、镜头、完整范例 |
-| `references/layer-vocabulary.md` | 七层词库 + 句式模板 + 尺度锚定技法详解 |
-| `references/style-presets.md` | 12 组风格预设与媒介词，含相机参数写法 |
-| `assets/prompt-library.md` | 30 条可直接复制的完整提示词种子 |
+| [references/scene-playbooks.md](references/scene-playbooks.md) | 五类场景剧本：结构语法、材质、环境、镜头、完整范例 |
+| [references/layer-vocabulary.md](references/layer-vocabulary.md) | 七层词库 + 句式模板 + 尺度锚定技法详解 |
+| [references/style-presets.md](references/style-presets.md) | 12 组风格预设与媒介词，含相机参数写法 |
+| [assets/prompt-library.md](assets/prompt-library.md) | 30 条可直接复制的完整提示词种子 |
 
 **按需读取**：不要一次全读。先读对应场景的 playbook，需要调词再读 layer-vocabulary，最后在 prompt-library 里找可复用的句子骨架。
 
