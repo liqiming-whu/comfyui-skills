@@ -21,6 +21,22 @@ from PIL import Image
 
 IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".webp", ".bmp", ".tif", ".tiff"}
 
+# Match explicit image geometry, not a portrait subject, landscape object,
+# wide shot, vertical window, or an actual banner. Other wording/languages
+# still require semantic review; this is not an exhaustive language detector.
+FRAME_DETAILS = re.compile(
+    r"画幅|宽高比|长宽比|横版|竖版|(?:画面|图片|图像|照片)(?:的)?(?:比例|分辨率|尺寸)|"
+    r"(?:横幅|竖幅|宽银幕)(?:的)?(?:构图|人物|人像|摄影|照片|图像|画面|肖像|比例)|"
+    r"\b(?:aspect[- ]ratio|widescreen[- ](?:format|composition|image|photo(?:graph)?))\b|"
+    r"\b(?:portrait|landscape|vertical|horizontal|square)[- ](?:format|orientation|composition)\b|"
+    r"\b(?:image|picture|photo(?:graph)?|frame)[- ](?:ratio|dimensions?|resolution)\b|"
+    r"(?<!\d)(?:1\s*[:：]\s*[12]|2\s*[:：]\s*[13]|3\s*[:：]\s*[24]|"
+    r"4\s*[:：]\s*[35]|5\s*[:：]\s*4|9\s*[:：]\s*(?:16|21)|"
+    r"16\s*[:：]\s*(?:9|10)|21\s*[:：]\s*9)(?!\d)|"
+    r"\b\d{3,5}\s*[x×]\s*\d{3,5}\b",
+    re.I,
+)
+
 NEGATION = ["without", "no", "not", "never", "free of", "exclude"]
 
 # Natural-language negation in a caption is distinct from a negative-prompt
@@ -126,6 +142,10 @@ def main() -> int:
     ap = argparse.ArgumentParser(description="Krea 2 LoRA dataset caption linter")
     ap.add_argument("dataset_dir")
     ap.add_argument("--trigger", required=True, help="trigger word/phrase, must appear exactly once per caption")
+    ap.add_argument(
+        "--trigger-match", choices=["word", "literal"], default="word",
+        help="word: require Unicode word boundaries; literal: count the exact string in unspaced text",
+    )
     ap.add_argument("--mirror-suffix", default="", help="e.g. _mirror ; '' disables mirror checks")
     ap.add_argument(
         "--mirror-mode",
@@ -224,7 +244,10 @@ def main() -> int:
             rep.f(f"{n}: caption contains internal line breaks (must be one line)")
 
         # trigger
-        cnt = len(re.findall(rf"(?<!\w){re.escape(args.trigger)}(?!\w)", text, re.I))
+        trigger_pattern = re.escape(args.trigger)
+        if args.trigger_match == "word":
+            trigger_pattern = rf"(?<!\w){trigger_pattern}(?!\w)"
+        cnt = len(re.findall(trigger_pattern, text, re.I))
         entry["trigger_count"] = cnt
         if cnt == 0:
             rep.f(f"{n}: trigger '{args.trigger}' missing")
@@ -236,6 +259,9 @@ def main() -> int:
         for b in banned:
             if b in low:
                 rep.f(f"{n}: user-defined banned phrase present: '{b}'")
+        frame_detail = FRAME_DETAILS.search(text)
+        if frame_detail:
+            rep.f(f"{n}: image ratio/frame description present: '{frame_detail[0]}'; keep geometry in metadata")
 
         # Negation is a review warning, not proof of an incorrect description.
         for w in negation:
@@ -423,6 +449,8 @@ def main() -> int:
         "strict": args.strict,
         "blocking_passed": not rep.fail,
         "passed": accepted,
+        "trigger_match": args.trigger_match,
+        "frame_check_scope": "explicit Chinese/English phrases and common numeric forms; semantic review required for other wording",
         "mirror_scope": "text consistency only; visual semantics require image review",
     }
     report_json = json.dumps(report, ensure_ascii=False, indent=2)

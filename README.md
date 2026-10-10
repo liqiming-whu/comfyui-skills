@@ -121,7 +121,7 @@ uv run --no-project --with pillow python -X utf8 -m unittest discover -s tests -
 uv run --no-project --with pillow python -X utf8 scripts/lint_captions.py "<dataset_dir>" --trigger "<trigger>" --strict --json
 ```
 
-检查器默认只读，覆盖图文配对、图片解码、UTF-8 caption、触发词和镜像方向等检查。启发式告警供人工复核，静态通过不能证明人物身份一致或训练效果。使用说明见[训练技能](skills/krea2-lora-training/SKILL.md)和[验收协议](skills/krea2-lora-training/references/qa-checklist.md)。
+检查器默认只读，覆盖图文配对、图片解码、UTF-8 caption、触发词、明确的图片比例与画幅表述、镜像方向等检查。无空格正文中的触发词可选择 `--trigger-match literal` 按完整字符串计数；默认使用词边界匹配。英文词数和关键词检查需按 caption 语言调整，启发式告警供人工复核，静态通过不能证明人物身份一致或训练效果。制作说明补充了逐图多样性计划、原始身份参考比对和分批验收。使用说明见[训练技能](skills/krea2-lora-training/SKILL.md)和[验收协议](skills/krea2-lora-training/references/qa-checklist.md)。
 
 训练技能已于 2026-10-11 同步本地更新，补充指定图片重复采样、ComfyUI API 执行与结果留存、检查点和触发词对照方法，并附带[实测案例](skills/krea2-lora-training/references/checkpoint-examples.md)、[固定测试提示词](skills/krea2-lora-training/assets/evaluation-prompts.json)和[API 工作流示例](skills/krea2-lora-training/assets/Ada_step1000_Turbo_Base_API.json)。历史案例的结论限定于记录中的模型与测试条件；同步这些资料不代表本项目已重新执行训练或生图测试。
 
