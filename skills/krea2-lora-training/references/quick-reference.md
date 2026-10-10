@@ -13,6 +13,10 @@
 
 AI-Toolkit 的 caption 注入、dropout、缓存、分辨率展开和 step 定义需读取实际安装版本。可定位 `toolkit/config_modules.py`、`toolkit/dataloader_mixins.py`、`toolkit/data_loader.py` 和 `jobs/process/BaseSDTrainProcess.py`，不把一个版本的行为当作所有训练器的规范。
 
+本机 `D:/lora/AI-Toolkit/toolkit/data_loader.py` 的目录扫描使用 `os.walk`，`num_repeats` 重复整个文件列表；参考 [上游加载源码](https://github.com/ostris/ai-toolkit/blob/main/toolkit/data_loader.py)，执行时仍以安装版本为准。文件名或目录的数字前缀不设置倍率，详细方案见 [训练与评估](training-evaluation.md)。
+
+可复用的 ComfyUI API 图、林知微/Ada 已完成的实测范围及 Xiaoling 项目提示词见 [实测案例与测试示例](checkpoint-examples.md)。它们分别属于执行资产、历史观察和测试输入，不能代替新模型的实际测试。
+
 词数范围、维度关键词覆盖率、补图张数、头位比例和看图抽样量都是可调整的经验或操作约定。它们不能保证训练收益，也不能自动判定图像属性的存在或不存在。
 
 正文中每条一次的完整触发词是当前检查器默认协议；独立别名训练需另定分配与验证规则。稳定身份描述并不因重复出现就必然有害。

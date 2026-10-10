@@ -22,7 +22,7 @@
 | [`comfyui-workflow`](skills/comfyui-workflow/) | 创建、修改、迁移和校验 ComfyUI UI 工作流 | UI 工作流 JSON、模型依赖和结构检查 |
 | [`comfyui-performance-monitor`](skills/comfyui-performance-monitor/) | 记录 ComfyUI 运行时间与本机资源状态 | 可比较的性能测量报告 |
 | [`krea2-prompt-engineering`](skills/krea2-prompt-engineering/) | 编写和调试 Krea 2 自然语言提示词 | 模型校准、摄影造型与东方仙宫场景提示词 |
-| [`krea2-lora-training`](skills/krea2-lora-training/) | 制作和审查人物、风格或物件 LoRA 数据集，核对训练配置并评估检查点 | 图文配对与 caption 检查、数据集修订和固定条件评估方案 |
+| [`krea2-lora-training`](skills/krea2-lora-training/) | 制作和审查 LoRA 数据集，核对训练配置与重复采样，通过 ComfyUI API 评估检查点和触发词 | 图文配对与 caption 检查、重复采样方案、API 测试流程与实测案例 |
 | [`krea2-megastructure-prompts`](skills/krea2-megastructure-prompts/) | 生成巨构、巨兽与超尺度场景提示词 | 英文长提示词、尺度锚定和场景变体 |
 
 每个 Skill 都是独立可分发目录。安装时复制所需的完整目录，不要只复制 `SKILL.md`。
@@ -122,6 +122,8 @@ uv run --no-project --with pillow python -X utf8 scripts/lint_captions.py "<data
 ```
 
 检查器默认只读，覆盖图文配对、图片解码、UTF-8 caption、触发词和镜像方向等检查。启发式告警供人工复核，静态通过不能证明人物身份一致或训练效果。使用说明见[训练技能](skills/krea2-lora-training/SKILL.md)和[验收协议](skills/krea2-lora-training/references/qa-checklist.md)。
+
+训练技能已于 2026-10-11 同步本地更新，补充指定图片重复采样、ComfyUI API 执行与结果留存、检查点和触发词对照方法，并附带[实测案例](skills/krea2-lora-training/references/checkpoint-examples.md)、[固定测试提示词](skills/krea2-lora-training/assets/evaluation-prompts.json)和[API 工作流示例](skills/krea2-lora-training/assets/Ada_step1000_Turbo_Base_API.json)。历史案例的结论限定于记录中的模型与测试条件；同步这些资料不代表本项目已重新执行训练或生图测试。
 
 ## 致谢
 

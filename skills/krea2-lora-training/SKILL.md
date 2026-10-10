@@ -1,6 +1,6 @@
 ---
 name: krea2-lora-training
-description: 为 Krea 2 制作和审查人物、风格或物件 LoRA 数据集，修订自然语言 caption，核对本地训练配置，并设计固定条件的检查点评估。适用于 Krea 2 训练素材、caption、训练参数和检查点选择请求。
+description: 为 Krea 2 制作和审查 LoRA 数据集，修订自然语言 caption，核对训练配置与重复采样，并通过 ComfyUI API 进行固定条件的检查点和触发词评估。适用于 Krea 2 训练素材、caption、训练参数和检查点测试请求。
 ---
 
 # Krea 2 LoRA 数据集与训练评估
@@ -36,7 +36,9 @@ uv run --no-project --with pillow python -X utf8 scripts/lint_captions.py "<data
 
 ## 本地训练与检查点评估
 
-用户请求参数、训练或 step 选择时，读取 [本地训练与评估](references/training-evaluation.md)。先核对实际 config、当前日志与版本；不要用云端默认值替代本地设置。
+用户请求参数、重复采样、训练或 step 选择时，读取 [本地训练与评估](references/training-evaluation.md)。先核对实际 config、当前日志与版本；不要用云端默认值替代本地设置。
+
+使用运行中的 ComfyUI 测试时，优先提交 API 工作流，不需要打开浏览器。读取上述参考中的 API 执行流程；需要测试正文、林知微/Ada 的实测边界或已执行的 API 图时，读取 [实测案例与测试示例](references/checkpoint-examples.md)。
 
 RAW 训练、Turbo 推理是官方推荐；评估必须注明实际基座。固定提示词、种子、采样条件和 LoRA 强度，比较身份保持与条件服从；loss 只能帮助选择抽测范围。
 

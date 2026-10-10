@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "xiaoling_v3": {
+    "source_url": "https://huggingface.co/venusleeyous/xiaoling-lora",
+    "source_evaluation_url": "https://huggingface.co/venusleeyous/xiaoling-lora/raw/main/evaluation.json",
+    "retrieved_date": "2026-10-11",
+    "source_evaluation_sha256": "b80853432d5cbd9f0e42b514f0d446c049ba3dde1f73b9804c811824183c8f38",
+    "source_readme_sha256": "55c534771b210c94284750fb681ab3c9fe8c2327460c9f2d8a6f432642ec09d9",
+    "trigger_word": "xiaoling",
+    "checkpoint_steps": [
+      800,
+      1000,
+      1050,
+      1200,
+      1400
+    ],
+    "generation": {
+      "base_model": "krea2-Comfy-org\\krea2_turbo_int8_convrot.safetensors",
+      "text_encoder": "qwen3vl_4b_fp8_scaled.safetensors",
+      "vae": "qwen_image_vae.safetensors",
+      "sampler": "euler",
+      "scheduler": "simple",
+      "steps": 8,
+      "cfg": 1.0,
+      "width": 1176,
+      "height": 1776,
+      "batch_size": 1,
+      "strength_model": 1.0,
+      "strength_clip": 1.0,
+      "negative_conditioning": "ConditioningZeroOut(positive)"
+    },
+    "prompts": {
+      "p1": {
+        "label": "图书馆正面肖像",
+        "seed": 101,
+        "text": "A candid waist-up portrait of xiaoling, a young Chinese woman, seated in a quiet modern library and facing the camera with a composed expression. She wears a dark green knit sweater. Soft, cool daylight fills the room, while bookshelves and a reading area blur gently in the background. Preserve her recognizable facial identity and natural skin texture."
+      },
+      "p2": {
+        "label": "地铁站四分之三侧面肖像",
+        "seed": 102,
+        "text": "A realistic portrait of xiaoling, a young Chinese woman, at a three-quarter angle turned toward the left side of the frame in a modern metro station. She looks thoughtfully toward the platform, wearing a deep red coat and a dark scarf. Cool station lights and distant commuters form a softly blurred background. Keep her facial identity consistent."
+      },
+      "p3": {
+        "label": "美术馆回望",
+        "seed": 103,
+        "text": "A candid waist-up portrait of xiaoling, a young Chinese woman, walking through a contemporary art museum and glancing back toward the camera. She wears a light tan trench coat over a charcoal high-neck top. Diffuse skylight, pale gallery walls, and a few distant artworks create a clean, quiet setting. Maintain her recognizable facial features."
+      },
+      "p4": {
+        "label": "屋顶自然笑容",
+        "seed": 104,
+        "text": "A lively portrait of xiaoling, a young Chinese woman, laughing naturally with her face turned slightly toward the right side of the frame. She wears a deep green cardigan on a rooftop at twilight. Cool blue evening light and softly blurred city lights create a gentle cinematic atmosphere while her identity remains clear."
+      },
+      "p5": {
+        "label": "山间侧脸",
+        "seed": 105,
+        "text": "A realistic side-profile portrait of xiaoling, a young Chinese woman, gazing toward the left side of the frame from a mountain overlook at dawn. A light breeze moves her shoulder-length dark hair. She wears a red wool coat and a knitted scarf, with a distant pale blue landscape softly out of focus. Preserve her facial identity."
+      },
+      "p6": {
+        "label": "更换发型和服装",
+        "seed": 106,
+        "text": "A realistic portrait of xiaoling, a young Chinese woman, shown in a three-quarter view with her face turned toward the right side of the frame. Give her a noticeably different hairstyle, with her dark hair worn loose around her shoulders instead of gathered into a bun, and a simple modern outfit different from her usual clothing. Use a clean, softly lit background. Keep her facial identity consistent."
+      },
+      "hair": {
+        "label": "侧脸短波浪发型",
+        "seed": 105,
+        "text": "A realistic side-profile portrait of xiaoling, a young Chinese woman, facing the right side of the frame with her facial features clearly visible in profile. Her dark hair is worn in a short, loose, softly wavy bob ending at her jawline, parted to one side, with no hair tied back. She wears a simple navy coat and a cream scarf. Cool soft daylight and a blurred modern city street create the background. Preserve her recognizable facial identity and natural skin texture."
+      }
+    }
+  },
+  "ada_20261010": {
+    "source_directory": "D:\\DSH_workspace\\Ada_krea2_step_eval_20261010",
+    "evaluation_date": "2026-10-10",
+    "trigger_word": "林知微(Ada)",
+    "checkpoint_steps": [
+      400,
+      600,
+      800,
+      1000,
+      1200,
+      1400
+    ],
+    "generation": {
+      "base_model": "krea2-Comfy-org\\krea2_turbo_int8_convrot.safetensors",
+      "text_encoder": "qwen3vl_4b_fp8_scaled.safetensors",
+      "vae": "qwen_image_vae.safetensors",
+      "sampler": "euler",
+      "scheduler": "simple",
+      "steps": 8,
+      "cfg": 1,
+      "width": 1176,
+      "height": 1776,
+      "strength_model": 1,
+      "strength_clip": 1,
+      "negative_conditioning": "ConditioningZeroOut(positive)"
+    },
+    "secondary_portrait_seed": 271828,
+    "prompts": {
+      "portrait": {
+        "seed": 314159,
+        "text": "林知微(Ada), an adult Chinese woman wearing a plain blue crew-neck cotton T-shirt. A close portrait from the chest upward, facing the camera, her head level and upright, a calm neutral expression, her eyes looking at the camera. Her dark hair is loose and tucked behind her ears. She stands beside a window in a simple white room in natural daylight. Her face is clearly visible."
+      },
+      "flash": {
+        "seed": 314159,
+        "text": "林知微(Ada), an adult Chinese woman wearing a red zip-up hoodie. A close portrait from the chest upward, her face turned three quarters toward the left side of the image, her head level and upright. Her eyes look toward something outside the frame, her mouth slightly open as if speaking. Her dark hair is pulled into a plain ponytail. She is outside on a city sidewalk at night, lit by direct on-camera flash, with distinct shadows, visible skin texture and small reflected highlights on her skin. Her face is clearly visible."
+      },
+      "fullbody": {
+        "seed": 314159,
+        "text": "林知微(Ada), an adult Chinese woman walking through a park on an overcast day. A full-length photograph showing her entire body and both shoes. She wears a green long-sleeved sweater, dark straight-leg jeans and white sneakers. Her dark hair is in a plain ponytail. Her head is level and upright, she looks toward the right side of the image with a small open-mouth smile. Trees and a paved path are behind her. Her face is clearly visible."
+      }
+    }
+  }
+}
