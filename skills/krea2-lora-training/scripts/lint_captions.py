@@ -23,7 +23,61 @@ IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".webp", ".bmp", ".tif", ".tiff"}
 
 # Require an explicit image-coordinate prefix. Bare 左/右, anatomical sides
 # (左手), and motion (身体向左转) are deliberately outside this text check.
-IMAGE_COORDI…843 tokens truncated…g|"
+IMAGE_COORDINATES = re.compile(
+    r"\bimage-(?P<english>left|right)\b|"
+    r"(?P<prefix>画面(?:的)?)(?P<chinese>左|右)(?P<suffix>侧|边|方)",
+    re.I,
+)
+
+
+def flip_image_coordinate(match: re.Match) -> str:
+    """Swap only a matched coordinate, preserving Chinese prefix/suffix."""
+    if match["english"]:
+        return "image-" + ("right" if match["english"].lower() == "left" else "left")
+    return match["prefix"] + ("右" if match["chinese"] == "左" else "左") + match["suffix"]
+
+# Match explicit image geometry, not a portrait subject, landscape object,
+# wide shot, vertical window, or an actual banner. Other wording/languages
+# still require semantic review; this is not an exhaustive language detector.
+FRAME_DETAILS = re.compile(
+    r"画幅|宽高比|长宽比|横版|竖版|(?:画面|图片|图像|照片)(?:的)?(?:比例|分辨率|尺寸)|"
+    r"(?:横幅|竖幅|宽银幕)(?:的)?(?:构图|人物|人像|摄影|照片|图像|画面|肖像|比例)|"
+    r"\b(?:aspect[- ]ratio|widescreen[- ](?:format|composition|image|photo(?:graph)?))\b|"
+    r"\b(?:portrait|landscape|vertical|horizontal|square)[- ](?:format|orientation|composition)\b|"
+    r"\b(?:image|picture|photo(?:graph)?|frame)[- ](?:ratio|dimensions?|resolution)\b|"
+    r"(?<!\d)(?:1\s*[:：]\s*[12]|2\s*[:：]\s*[13]|3\s*[:：]\s*[24]|"
+    r"4\s*[:：]\s*[35]|5\s*[:：]\s*4|9\s*[:：]\s*(?:16|21)|"
+    r"16\s*[:：]\s*(?:9|10)|21\s*[:：]\s*9)(?!\d)|"
+    r"\b\d{3,5}\s*[x×]\s*\d{3,5}\b",
+    re.I,
+)
+
+NEGATION = ["without", "no", "not", "never", "free of", "exclude"]
+
+# Natural-language negation in a caption is distinct from a negative-prompt
+# branch. Warn for review without assuming it is invalid or rewriting it.
+NEGATION_SUFFIX = re.compile(r"\b[a-z]+(?:-free|-less)\b", re.I)
+
+# Camera settings that cannot be read off a picture. Deliberately does NOT match
+# "filmed at eye level" (camera position) or "focal plane" (focus plane) - a
+# regex of `film|focal` once classified those as focal-length claims, which was
+# a false positive that distorted a whole review.
+CAMERA_PARAMS = [
+    (re.compile(r"\baperture\b", re.I), "'aperture'"),
+    (re.compile(r"\bf\s*/\s*\d+(?:\.\d+)?\b", re.I), "f-number"),
+    (re.compile(r"\bf-stop\b", re.I), "'f-stop'"),
+    (re.compile(r"\bstopped down\b", re.I), "'stopped down'"),
+    (re.compile(r"\bwide open\b", re.I), "'wide open'"),
+    (re.compile(r"\bfocal length\b", re.I), "'focal length'"),
+    (re.compile(r"\b\d+(?:\.\d+)?\s*mm\b", re.I), "metric focal length"),
+    (re.compile(r"\b\d+(?:\.\d+)?\s*(?:degrees?|°)\b", re.I), "measured angle"),
+]
+
+# Grammar markers used to tell prose apart from bare tags.
+FUNCTION_WORDS = re.compile(
+    r"\b(a|an|the|is|are|was|were|she|he|they|it|her|his|their|its|with|without|"
+    r"and|or|of|to|in|on|at|from|by|for|as|that|which|while|where|into|over|"
+    r"under|between|wearing|wears|wore|holds|holding|rests|resting|sits|sitting|"
     r"stands|standing|looks|looking|turns|turning|leans|leaning|faces|facing|"
     r"falls|falling|blur|blurs|blurred|soften|softens|softened|light|lit|"
     r"framed|shot|filmed|held|set|close|eyes|hair|smile|smiling|this|these|"
