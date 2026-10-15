@@ -38,16 +38,38 @@ class ChineseMirrorTests(LintCase):
                     mirror = self.TRIGGER + f"站在{prefix}右{suffix}，窗户在{prefix}左{suffix}，书架在{prefix}右{suffix}。"
                     code, rep, raw = self.check_pair(base, mirror, "--strict")
                     self.assertEqual(code, 0, raw)
+                    self.assertTrue(rep["passed"], raw)
+                    self.assertTrue(rep["blocking_passed"], raw)
                     self.assertEqual(rep["warn"], [], raw)
                     self.assertIn("literal image-coordinate substitution matches", self.joined(rep["info"]), raw)
 
-    def test_copied_balanced_coordinates_block_in_normal_mode(self):
-        for appended in ("", " 这是同一场景的镜像。"):
-            with self.subTest(appended=appended):
-                code, rep, raw = self.check_pair(self.BASE, self.BASE + appended)
-                self.assertEqual(code, 1, raw)
-                self.assertFalse(rep["blocking_passed"], raw)
-                self.assertIn("must be reversed", self.joined(rep["fail"]), raw)
+    def test_copied_balanced_coordinates_block_in_both_modes(self):
+        for ending in ("。", "！", "？"):
+            base = self.BASE[:-1] + ending
+            for appended in ("", " 这是同一场景的镜像。", "这是同一场景的镜像。"):
+                for strict in (False, True):
+                    with self.subTest(ending=ending, appended=appended, strict=strict):
+                        code, rep, raw = self.check_pair(base, base + appended, *(("--strict",) if strict else ()))
+                        self.assertEqual(code, 1, raw)
+                        self.assertFalse(rep["passed"], raw)
+                        self.assertFalse(rep["blocking_passed"], raw)
+                        self.assertEqual(rep["error_count"], 1, raw)
+                        self.assertEqual(rep["warn"], [], raw)
+                        self.assertIn("must be reversed", self.joined(rep["fail"]), raw)
+
+    def test_unfinished_prefix_continuation_requires_review(self):
+        # A prefix match inside a phrase is not proof that the original
+        # coordinate relation survived the rewrite.
+        base = self.TRIGGER + "站在画面左侧，窗户在画面右侧"
+        mirror = base + "的对面，即画面左侧，人物则在画面右侧。"
+        for strict in (False, True):
+            with self.subTest(strict=strict):
+                code, rep, raw = self.check_pair(base, mirror, *(("--strict",) if strict else ()))
+                self.assertEqual(code, int(strict), raw)
+                self.assertEqual(rep["passed"], not strict, raw)
+                self.assertTrue(rep["blocking_passed"], raw)
+                self.assertEqual(rep["fail"], [], raw)
+                self.assertIn("relations require visual review", self.joined(rep["warn"]), raw)
 
     def test_identical_mode_rejects_chinese_coordinates(self):
         code, rep, raw = self.check_pair(self.BASE, self.BASE, "--mirror-mode", "identical")
@@ -65,6 +87,7 @@ class ChineseMirrorTests(LintCase):
                 with self.subTest(mirror=mirror, strict=strict):
                     code, rep, raw = self.check_pair(self.BASE, mirror, *(("--strict",) if strict else ()))
                     self.assertEqual(code, int(strict), raw)
+                    self.assertEqual(rep["passed"], not strict, raw)
                     self.assertTrue(rep["blocking_passed"], raw)
                     self.assertEqual(rep["fail"], [], raw)
                     self.assertIn("relations require visual review", self.joined(rep["warn"]), raw)

@@ -382,7 +382,16 @@ def main() -> int:
             else:
                 expected_text = directions.sub(flip_image_coordinate, base)
                 normalize = lambda value: " ".join(value.lower().split())
-                if base_dirs and (normalize(text) == normalize(base) or normalize(text).startswith(normalize(base) + " ")):
+                normalized_base, normalized_text = normalize(base), normalize(text)
+                # Chinese sentences need no separating space. Require the
+                # entire original sentence, including its terminal punctuation;
+                # a prefix inside an unfinished phrase still needs review.
+                copied = (
+                    normalized_text == normalized_base
+                    or normalized_text.startswith(normalized_base + " ")
+                    or (normalized_base.endswith(("。", "！", "？")) and normalized_text.startswith(normalized_base))
+                )
+                if base_dirs and copied:
                     rep.f(
                         f"{stem}.txt: copied image-coordinate wording must be reversed for the mirror"
                     )
