@@ -24,6 +24,7 @@
 | [`krea2-prompt-engineering`](skills/krea2-prompt-engineering/) | 编写和调试 Krea 2 自然语言提示词 | 模型校准、摄影造型与东方仙宫场景提示词 |
 | [`krea2-lora-training`](skills/krea2-lora-training/) | 制作和审查 LoRA 数据集，核对训练配置与重复采样，通过 ComfyUI API 评估检查点和触发词 | 图文配对与 caption 检查、重复采样方案、API 测试流程与实测案例 |
 | [`krea2-megastructure-prompts`](skills/krea2-megastructure-prompts/) | 生成巨构、巨兽与超尺度场景提示词 | 英文长提示词、尺度锚定和场景变体 |
+| [`moss-image-megastructure-prompts`](skills/moss-image-megastructure-prompts/) | 为 MOSS-Image 编写巨构 Caption 或受控 Layout | 可复制提示词、像素布局草稿、官方编译器与静态检查 |
 
 每个 Skill 都是独立可分发目录。安装时复制所需的完整目录，不要只复制 `SKILL.md`。
 

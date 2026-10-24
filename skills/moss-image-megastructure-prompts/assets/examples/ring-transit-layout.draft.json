@@ -1,0 +1,42 @@
+{
+  "width": 1536,
+  "height": 1024,
+  "bbox_coord_space": "abs",
+  "bbox_format": "xyxy",
+  "summary": {
+    "canvas": "single",
+    "caption": "A monumental weathered bronze ring gate floats vertically over a pale cloud sea, its circular opening showing distant blue sky. One long exploration vessel passes diagonally through the opening from upper left background toward lower right foreground: the far stern is occluded by the far upper-left rim, while the near bow overlaps in front of the lower-right rim. One tiny escort skiff hangs clear below and right, establishing the gate's scale. Repeated radial ribs provide structure without dense decorative clutter. Warm dawn light from the upper left grazes bronze and hull; near surfaces are crisp, the far rim softens through mist and distant clouds dissolve. A 35mm distant cinematic view, fantasy industrial realism."
+  },
+  "items": [
+    {
+      "label": "object",
+      "caption": "One continuous bronze ring gate seen obliquely with an open central aperture, radial ribs and heavy curved segments; the far upper-left rim passes in front of the vessel's stern while the near lower-right rim lies behind the vessel's bow. Blue sky remains visible through the aperture around the vessel.",
+      "bbox": [
+        280,
+        80,
+        1120,
+        944
+      ]
+    },
+    {
+      "label": "object",
+      "caption": "A long slender exploration vessel angled from its distant upper-left stern to a nearer lower-right bow, physically threading the ring's open center. The far stern disappears behind the far rim, and the near bow crosses in front of the near rim. Sparse hull panels and one row of windows establish its scale.",
+      "bbox": [
+        352,
+        304,
+        1280,
+        744
+      ]
+    },
+    {
+      "label": "object",
+      "caption": "One tiny escort skiff, clearly separate below and right of the ring, with a small warm running light, dwarfed by the gate and main vessel.",
+      "bbox": [
+        1264,
+        816,
+        1296,
+        832
+      ]
+    }
+  ]
+}

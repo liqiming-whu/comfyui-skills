@@ -1,0 +1,52 @@
+{
+  "width": 1536,
+  "height": 864,
+  "bbox_coord_space": "abs",
+  "bbox_format": "xyxy",
+  "summary": {
+    "canvas": "single",
+    "caption": "A slender ancient stone bridge spans a vast open chasm between two sheer sandstone cliffs, its ends embedded in opposing ledges at the same height. One tiny cloaked traveler stands near the middle on top of the bridge, feet on its deck, dwarfed by the cliffs. Repeated stone joints and a few deep buttresses make the structure readable; the void beneath the bridge remains open and fades into mist. Near cliff faces are sharp, the middle canyon is veiled in cool haze and far rock layers dissolve. Low afternoon sunlight enters from the right, illuminating right-facing stone and casting shadows left. Distant 35mm panoramic fantasy realism with restrained detail."
+  },
+  "items": [
+    {
+      "label": "object",
+      "caption": "Left sandstone cliff face, cut off by the left and bottom edges, with a ledge at bridge-deck height receiving the bridge's left abutment.",
+      "bbox": [
+        0,
+        128,
+        432,
+        864
+      ]
+    },
+    {
+      "label": "object",
+      "caption": "Right sandstone cliff face, cut off by the right and bottom edges, with an opposing ledge receiving the bridge's right abutment at the same height.",
+      "bbox": [
+        1104,
+        80,
+        1536,
+        864
+      ]
+    },
+    {
+      "label": "object",
+      "caption": "One continuous slender stone bridge joining the left and right cliff ledges, deck running level along its top edge; the bridge's ends disappear into the cliff abutments. The space beneath its shallow stone arch is empty air, without additional piers.",
+      "bbox": [
+        384,
+        400,
+        1152,
+        464
+      ]
+    },
+    {
+      "label": "object",
+      "caption": "One tiny cloaked traveler standing upright on top of the bridge at its midpoint, the feet touching the deck and the head above it, a distinct dark silhouette.",
+      "bbox": [
+        760,
+        380,
+        772,
+        400
+      ]
+    }
+  ]
+}

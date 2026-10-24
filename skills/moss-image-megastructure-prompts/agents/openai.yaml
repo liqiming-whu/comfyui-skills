@@ -1,0 +1,4 @@
+interface:
+  display_name: "MOSS 巨构构图"
+  short_description: "为 MOSS 编写自然语言巨构提示词或可重复编译的像素布局草稿"
+  default_prompt: "Use $moss-image-megastructure-prompts to compose a fantasy megastructure as a caption or controlled Layout."
